@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+
+{% set endpoint = request.endpoint %}
+
+<div class="admin-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+      <i class="bi bi-flask"></i>
+      <span>Lab Portal</span>
+    </div>
+
+    <nav>
+      <a href="{{ url_for('labstaff.dashboard') }}"
+         class="nav-link {% if endpoint == 'labstaff.dashboard' %}active{% endif %}">
+        <i class="bi bi-speedometer2"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="{{ url_for('labstaff.test_requests') }}"
+         class="nav-link {% if endpoint.startswith('labstaff.test') %}active{% endif %}">
+        <i class="bi bi-clipboard-data"></i>
+        <span>Test Requests</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="{{ url_for('labstaff.profile') }}"
+         class="nav-link {% if endpoint == 'labstaff.profile' %}active{% endif %}">
+        <i class="bi bi-person-circle"></i>
+        <span>Profile</span>
+      </a>
+
+      <a href="{{ url_for('auth.logout') }}">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <!-- Topbar -->
+    <div class="topbar d-flex align-items-center gap-2">
+
+      <!-- Toggle button -->
+      <button class="btn btn-outline-dark d-md-none" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <!-- Title -->
+      <div class="topbar-title fw-semibold">
+        <i class="bi bi-hospital me-2 text-primary"></i>
+        {{ current_user.hospital_name }}
+      </div>
+
+      <!-- Right -->
+      <div class="ms-auto topbar-user">
+        <span class="badge bg-success">Lab Staff</span>
+      </div>
+
+    </div>
+
+    <!-- Content -->
+    <div class="admin-content container-fluid">
+      {% block lab_content %}{% endblock %}
+    </div>
+
+  </main>
+
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Patient Portal{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/patient.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- DESKTOP NAVBAR ONLY -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm border-bottom d-none d-lg-flex">
+
+  <div class="container-fluid px-4">
+
+    <a class="navbar-brand fw-bold text-primary"
+       href="{{ url_for('patient.dashboard') }}">
+      <i class="bi bi-heart-pulse"></i>
+      Hospital Portal
+    </a>
+
+    <div class="ms-auto d-flex align-items-center gap-3">
+
+      <a href="{{ url_for('patient.dashboard') }}"
+         class="nav-link {% if request.endpoint == 'patient.dashboard' %}fw-bold text-primary{% endif %}">
+        Dashboard
+      </a>
+
+      <a href="{{ url_for('patient.hospitals') }}"
+         class="nav-link {% if 'hospital' in request.endpoint %}fw-bold text-primary{% endif %}">
+        Book Appointment
+      </a>
+
+      <a href="{{ url_for('patient.appointment_history') }}"
+         class="nav-link {% if 'appointment' in request.endpoint %}fw-bold text-primary{% endif %}">
+        My Appointments
+      </a>
+
+      <a href="{{ url_for('patient.reports') }}"
+         class="nav-link {% if 'reports' in request.endpoint %}fw-bold text-primary{% endif %}">
+        Reports
+      </a>
+
+        <!-- PROFILE DROPDOWN (DESKTOP FIX) -->
+      <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle d-flex align-items-center gap-2"
+                data-bs-toggle="dropdown">
+          <i class="bi bi-person-circle fs-5"></i>
+          Account
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow">
+          <li>
+            <a class="dropdown-item" href="{{ url_for('patient.profile') }}">
+              <i class="bi bi-person"></i> Profile
+            </a>
+          </li>
+
+          <li>
+            <a class="dropdown-item" href="{{ url_for('auth.change_password') }}">
+              <i class="bi bi-key"></i> Change Password
+            </a>
+          </li>
+
+          <li><hr class="dropdown-divider"></li>
+
+          <li>
+            <a class="dropdown-item text-danger"
+              href="{{ url_for('auth.logout') }}">
+              <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+</nav>
+
+<!-- MOBILE TOP BAR -->
+<div class="d-flex d-lg-none justify-content-between align-items-center px-3 py-2 border-bottom bg-white shadow-sm">
+
+  <div class="fw-semibold">
+    <i class="bi bi-heart-pulse text-primary"></i>
+    Hospital
+  </div>
+
+  <div class="dropdown">
+    <button class="btn btn-light btn-sm" data-bs-toggle="dropdown">
+      <i class="bi bi-person-circle fs-5"></i>
+    </button>
+
+    <ul class="dropdown-menu dropdown-menu-end shadow">
+      <li>
+        <a class="dropdown-item" href="{{ url_for('patient.profile') }}">
+          Profile
+        </a>
+      </li>
+
+      <li>
+        <a class="dropdown-item" href="{{ url_for('auth.change_password') }}">
+          Change Password
+        </a>
+      </li>
+
+      <li><hr class="dropdown-divider"></li>
+
+      <li>
+        <a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
+          Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- CONTENT -->
+<div class="container-fluid px-3 px-md-4 mt-3 mb-5">
+  {% block patient_content %}{% endblock %}
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<div class="bottom-nav d-lg-none">
+
+  <a href="{{ url_for('patient.dashboard') }}"
+     class="{% if request.endpoint == 'patient.dashboard' %}active{% endif %}">
+    <i class="bi bi-house"></i>
+    <span>Home</span>
+  </a>
+
+  <a href="{{ url_for('patient.hospitals') }}"
+     class="{% if 'hospital' in request.endpoint %}active{% endif %}">
+    <i class="bi bi-calendar-plus"></i>
+    <span>Book</span>
+  </a>
+
+  <a href="{{ url_for('patient.appointment_history') }}"
+     class="{% if 'appointment' in request.endpoint %}active{% endif %}">
+    <i class="bi bi-clock-history"></i>
+    <span>Appointments</span>
+  </a>
+
+  <a href="{{ url_for('patient.reports') }}"
+     class="{% if 'reports' in request.endpoint %}active{% endif %}">
+    <i class="bi bi-file-earmark-medical"></i>
+    <span>Reports</span>
+  </a>
+
+</div>
+
+{% endblock %}

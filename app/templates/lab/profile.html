@@ -1,0 +1,115 @@
+{% extends "layouts/lab_layout.html" %} {% block title %}Profile{% endblock %}
+{% block lab_content %}
+
+<h3 class="mb-4">Lab Staff Profile</h3>
+
+<div class="row g-4 align-items-stretch">
+  <!-- Staff Info -->
+
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header fw-semibold d-flex align-items-center gap-2">
+        <i class="bi bi-person-circle text-primary"></i>
+        <span>Staff Information</span>
+      </div>
+
+      <div class="card-body d-flex flex-column justify-content-between">
+        <div>
+          <div class="mb-2 d-flex justify-content-between">
+            <span class="text-muted">Name</span>
+            <span class="fw-semibold">{{ staff.staff_name }}</span>
+          </div>
+
+          <div class="mb-2 d-flex justify-content-between">
+            <span class="text-muted">Role</span>
+            <span class="badge bg-primary">{{ staff.staff_role }}</span>
+          </div>
+
+          <div class="mb-2 d-flex justify-content-between">
+            <span class="text-muted">Email</span>
+            <span>{{ staff.email }}</span>
+          </div>
+
+          <div class="mb-2 d-flex justify-content-between">
+            <span class="text-muted">Phone</span>
+            <span>{{ staff.phone or "-" }}</span>
+          </div>
+        </div>
+
+        <div class="mt-3 d-flex gap-2">
+          <a
+            href="{{ url_for('labstaff.edit_profile') }}"
+            class="btn btn-outline-primary btn-sm w-100"
+          >
+            <i class="bi bi-pencil"></i> Edit
+          </a>
+
+          <a
+            href="{{ url_for('auth.change_password') }}"
+            class="btn btn-outline-secondary btn-sm w-100"
+          >
+            <i class="bi bi-key"></i> Change Password
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lab Info -->
+
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header fw-semibold d-flex align-items-center gap-2">
+        <i class="bi bi-clipboard2-pulse text-primary"></i>
+        Lab Information
+      </div>
+
+      <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="text-muted">Name</span>
+          <span class="fw-semibold">{{ lab.lab_name }}</span>
+        </div>
+
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="text-muted">Location</span>
+          <span>{{ lab.location or "-" }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hospital Info -->
+
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header fw-semibold d-flex align-items-center gap-2">
+        <i class="bi bi-hospital text-primary"></i>
+        <span>Hospital Information</span>
+      </div>
+
+      <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="text-muted">Name</span>
+          <span class="fw-semibold">{{ hospital.hospital_name }}</span>
+        </div>
+
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="text-muted">Address</span>
+          <span>{{ hospital.address }}</span>
+        </div>
+
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="text-muted">City</span>
+          <span>{{ hospital.city }}</span>
+        </div>
+
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="text-muted">Pincode</span>
+          <span>{{ hospital.pincode }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

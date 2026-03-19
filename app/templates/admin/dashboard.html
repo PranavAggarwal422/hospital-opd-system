@@ -1,0 +1,120 @@
+{% extends "layouts/admin_layout.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block admin_content %}
+
+<div class="mb-4">
+  <h3 class="fw-semibold mb-1">Dashboard</h3>
+  <p class="text-muted mb-0">Overview of your hospital system</p>
+</div>
+
+<!-- Stats Cards -->
+
+<div class="row g-3 g-md-4 mb-4">
+  {% set cards = [
+  ("Departments", stats.departments, "bi-building", "primary"),
+  ("Doctors", stats.doctors, "bi-person-badge", "success"),
+  ("OPD Rooms", stats.opds, "bi-door-open", "warning"),
+  ("Sessions", stats.sessions, "bi-clock", "info"),
+  ("Labs", stats.labs, "bi-clipboard2-pulse", "danger"),
+  ("Lab Staff", stats.staff, "bi-people", "secondary"),
+  ("Tests", stats.tests, "bi-activity", "primary")
+  ] %}
+
+  {% for title, value, icon, color in cards %}
+
+  <div class="col-12 col-sm-6 col-xl-3">
+
+    <div class="card dashboard-card p-3 border-start border-4 border-{{ color }}">
+
+      <div class="d-flex justify-content-between align-items-center">
+
+        <div>
+          <p class="text-muted small mb-1">{{ title }}</p>
+
+          <!-- colored numbers -->
+          <h3 class="fw-bold text-{{ color }} mb-0">
+            {{ value }}
+          </h3>
+        </div>
+
+        <!-- colored icon background -->
+        <div class="rounded-circle d-flex align-items-center justify-content-center"
+             style="width: 50px; height: 50px; background: rgba(var(--bs-{{ color }}-rgb), 0.1);">
+
+          <i class="bi {{ icon }} text-{{ color }} fs-4"></i>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  {% endfor %}
+</div>
+
+<!-- Quick Actions -->
+
+<div class="mt-4 mt-md-5">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-semibold mb-0">Quick Actions</h5>
+  </div>
+
+  <div class="row g-3">
+
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="{{ url_for('admin.departments') }}" class="text-decoration-none">
+        <div class="card dashboard-card text-center p-4 h-100">
+          <div class="mb-2">
+            <i class="bi bi-building fs-3 text-primary"></i>
+          </div>
+          <h6 class="fw-semibold mb-1">Departments</h6>
+          <p class="text-muted small mb-0">Manage hospital departments</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="{{ url_for('admin.labs') }}" class="text-decoration-none">
+        <div class="card dashboard-card text-center p-4 h-100">
+          <div class="mb-2">
+            <i class="bi bi-clipboard2-pulse fs-3 text-danger"></i>
+          </div>
+          <h6 class="fw-semibold mb-1">Labs</h6>
+          <p class="text-muted small mb-0">Manage diagnostic labs</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="{{ url_for('admin.hospital_tests') }}" class="text-decoration-none">
+        <div class="card dashboard-card text-center p-4 h-100">
+          <div class="mb-2">
+            <i class="bi bi-activity fs-3 text-success"></i>
+          </div>
+          <h6 class="fw-semibold mb-1">Tests</h6>
+          <p class="text-muted small mb-0">Manage hospital tests</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="{{ url_for('admin.departments') }}" class="text-decoration-none">
+        <div class="card dashboard-card text-center p-4 h-100">
+          <div class="mb-2">
+            <i class="bi bi-person-badge fs-3 text-warning"></i>
+          </div>
+          <h6 class="fw-semibold mb-1">Doctors</h6>
+          <p class="text-muted small mb-0">Manage doctors & schedules</p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

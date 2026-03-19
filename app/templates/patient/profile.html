@@ -1,0 +1,82 @@
+{% extends "layouts/patient_layout.html" %} {% block title %}My Profile{%
+endblock %} {% block patient_content %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card shadow-sm border-0 profile-card">
+      <div class="card-body">
+        <!-- Profile Header -->
+
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <div class="d-flex align-items-center gap-3">
+            <div class="profile-avatar">
+              <i class="bi bi-person"></i>
+            </div>
+
+            <div>
+              <h4 class="mb-0">{{ patient.patient_name }}</h4>
+
+              <p class="text-muted mb-0">Patient Account</p>
+            </div>
+          </div>
+
+          <a
+            href="{{ url_for('patient.edit_profile') }}"
+            class="btn btn-outline-primary btn-sm"
+          >
+            <i class="bi bi-pencil"></i>
+            Edit Profile
+          </a>
+        </div>
+
+        <hr />
+
+        <!-- Profile Info -->
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="profile-field">
+              <label>Email</label>
+
+              <p>{{ patient.email or "-" }}</p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="profile-field">
+              <label>Phone</label>
+
+              <p>{{ patient.phone or "-" }}</p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="profile-field">
+              <label>Date of Birth</label>
+
+              <p>{{ patient.dob }}</p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="profile-field">
+              <label>Gender</label>
+
+              <p>{{ patient.gender }}</p>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="profile-field">
+              <label>Address</label>
+
+              <p>{{ patient.address or "-" }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

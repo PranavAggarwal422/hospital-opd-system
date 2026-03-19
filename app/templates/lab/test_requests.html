@@ -1,0 +1,152 @@
+{% extends "layouts/lab_layout.html" %} {% block title %}Test Requests{%
+endblock %} {% block lab_content %}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+
+  <!-- Left -->
+  <div>
+    <h3 class="fw-semibold mb-1 d-flex align-items-center gap-2">
+      <i class="bi bi-clipboard-data text-primary"></i>
+      Test Requests
+    </h3>
+
+    <p class="text-muted mb-0 small">
+      Manage and track lab test workflow
+    </p>
+  </div>
+
+  <!-- Right -->
+  <a href="{{ url_for('labstaff.create_test_request_route') }}"
+     class="btn btn-primary d-flex align-items-center gap-2 justify-content-center">
+
+    <i class="bi bi-plus-lg"></i>
+
+    <span class="d-none d-sm-inline">New Request</span>
+    <span class="d-inline d-sm-none">New</span>
+
+  </a>
+
+</div>
+
+
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-4">Patient</th>
+            <th>Test</th>
+            <th>Appointment Date</th>
+            <th>Status</th>
+            <th width="160">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for t in tests %}
+
+          <tr
+            class="{% if t.test_status == 'Requested' %}table-warning{% endif %}"
+          >
+            <!-- Patient -->
+
+            <td class="ps-4 fw-semibold">
+              <i class="bi bi-person-circle text-primary me-2"></i>
+              {{ t.patient_name }}
+            </td>
+
+            <!-- Test -->
+
+            <td>
+              <div class="fw-semibold">{{ t.test_name }}</div>
+              <small class="text-muted">{{ t.test_type }}</small>
+            </td>
+
+            <!-- Appointment Date -->
+
+            <td>
+              <i class="bi bi-calendar-event me-1"></i>
+              {{ t.appointment_date }}
+            </td>
+
+            <!-- Status -->
+
+            <td>
+              {% if t.test_status == 'Requested' %}
+              <span class="badge bg-warning text-dark">Requested</span>
+
+              {% elif t.test_status == 'SampleCollected' %}
+              <span class="badge bg-info text-dark">Sample Collected</span>
+
+              {% elif t.test_status == 'Completed' %}
+              <span class="badge bg-success">Completed</span>
+              {% endif %}
+            </td>
+
+            <!-- Actions -->
+
+            <td>
+              <div class="d-flex gap-2 flex-nowrap">
+                {% if t.test_status == 'Requested' %}
+
+                <form
+                  method="POST"
+                  action="{{ url_for('labstaff.collect_sample_route', request_id=t.request_id) }}"
+                >
+                  <button
+                    class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1"
+                    data-confirm="Mark sample as collected for this patient?"
+                  >
+                    <i class="bi bi-droplet"></i> <span>Collect Sample</span>
+                  </button>
+                </form>
+
+                {% elif t.test_status == 'SampleCollected' %}
+
+                <a
+                  href="{{ url_for('labstaff.upload_report_route', request_id=t.request_id) }}"
+                  class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
+                >
+                  <i class="bi bi-upload"></i> <span>Upload Report</span>
+                </a>
+
+                {% else %}
+
+                <span class="text-muted small">Completed</span>
+
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+
+          {% else %}
+
+          <tr>
+            <td colspan="5" class="text-center py-5">
+              <div class="text-muted">
+                <i class="bi bi-clipboard-x fs-1 d-block mb-3 opacity-50"></i>
+
+                <h6 class="fw-semibold">No test requests</h6>
+                <p class="small mb-3">
+                  Create a new test request to get started
+                </p>
+
+                <a
+                  href="{{ url_for('labstaff.create_test_request_route') }}"
+                  class="btn btn-primary btn-sm"
+                >
+                  <i class="bi bi-plus-lg"></i> Create Request
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

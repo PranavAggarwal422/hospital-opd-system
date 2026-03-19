@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <i class="bi bi-shield-lock"></i>
+      <span>SuperAdmin</span>
+    </div>
+
+    <nav>
+      <a href="{{ url_for('superadmin.dashboard') }}"
+         class="{% if request.endpoint == 'superadmin.dashboard' %}active{% endif %}">
+        <i class="bi bi-speedometer2"></i>
+        <span>Dashboard</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="{{ url_for('auth.logout') }}">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <div class="topbar d-flex align-items-center gap-2">
+
+      <!-- Toggle button (mobile) -->
+      <button class="btn btn-outline-dark d-md-none" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <div class="topbar-title">System Administration</div>
+
+      <div class="ms-auto topbar-user">
+        <span class="badge bg-danger">SuperAdmin</span>
+      </div>
+
+    </div>
+
+    <div class="admin-content container-fluid">
+      {% block superadmin_content %}{% endblock %}
+    </div>
+
+  </main>
+
+</div>
+
+{% endblock %}

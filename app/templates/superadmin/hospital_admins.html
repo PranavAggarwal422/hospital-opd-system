@@ -1,0 +1,150 @@
+{% extends "layouts/superadmin_layout.html" %}
+
+{% block title %}Hospital Admins{% endblock %}
+
+{% block superadmin_content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+
+  <div>
+    <a
+      href="{{ url_for('superadmin.dashboard') }}"
+      class="btn btn-outline-secondary btn-sm mb-2"
+    >
+      <i class="bi bi-arrow-left"></i> Back
+    </a>
+
+    <h3 class="mb-0">{{ hospital.hospital_name }}</h3>
+    <p class="text-muted mb-0">{{ hospital.city }}, {{ hospital.state }}</p>
+  </div>
+
+  <button
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#addAdminModal"
+  >
+    <i class="bi bi-plus-lg"></i> Add Admin
+  </button>
+
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th width="160">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for admin in admins %}
+
+          <tr>
+            <td class="fw-semibold">{{ admin.admin_name }}</td>
+            <td>{{ admin.email or "-" }}</td>
+            <td>{{ admin.phone or "-" }}</td>
+
+            <td>
+              <div class="d-flex flex-wrap flex-md-nowrap">
+
+                <form
+                  method="POST"
+                  action="{{ url_for('superadmin.remove_admin', admin_id=admin.admin_id) }}"
+                >
+                  {{ add_admin_form.hidden_tag() }}
+
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    data-confirm="Are you sure you want to remove this admin? This action cannot be undone."
+                  >
+                    <i class="bi bi-person-x"></i> Remove
+                  </button>
+                </form>
+
+              </div>
+            </td>
+          </tr>
+
+          {% else %}
+
+          <tr>
+            <td colspan="4" class="text-center text-muted py-4">
+              No admins assigned
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add Admin Modal -->
+
+<div class="modal fade" id="addAdminModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add Admin</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form
+        method="POST"
+        action="{{ url_for('superadmin.add_admin', hospital_id=hospital.hospital_id) }}"
+      >
+        {{ add_admin_form.hidden_tag() }}
+
+        <div class="modal-body">
+
+          <div class="mb-3">
+            {{ add_admin_form.admin_name.label(class="form-label") }}
+            {{ add_admin_form.admin_name(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ add_admin_form.email.label(class="form-label") }}
+            {{ add_admin_form.email(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ add_admin_form.phone.label(class="form-label") }}
+            {{ add_admin_form.phone(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ add_admin_form.password.label(class="form-label") }}
+            {{ add_admin_form.password(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ add_admin_form.confirm_password.label(class="form-label") }}
+            {{ add_admin_form.confirm_password(class="form-control") }}
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+
+          {{ add_admin_form.submit(class="btn btn-primary") }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

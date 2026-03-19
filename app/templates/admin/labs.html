@@ -1,0 +1,200 @@
+{% extends "layouts/admin_layout.html" %} {% block title %}Labs{% endblock %} {%
+block admin_content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="mb-0">Diagnostic Labs</h3>
+    <p class="text-muted mb-0">Manage hospital diagnostic laboratories</p>
+  </div>
+
+  <button
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#addLabModal"
+  >
+    <i class="bi bi-plus-lg"></i> Add Lab
+  </button>
+</div>
+
+<!-- Analytics Cards -->
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card stat-card">
+      <i class="bi bi-clipboard2-pulse"></i>
+      <h5 class="mt-2">{{ labs|length }}</h5>
+      <small class="text-muted">Total Labs</small>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card stat-card">
+      <i class="bi bi-check-circle"></i>
+      <h5 class="mt-2">{{ labs | selectattr("is_active") | list | length }}</h5>
+      <small class="text-muted">Active</small>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card stat-card">
+      <i class="bi bi-x-circle"></i>
+      <h5 class="mt-2">{{ labs | rejectattr("is_active") | list | length }}</h5>
+      <small class="text-muted">Inactive</small>
+    </div>
+  </div>
+</div>
+
+<!-- Labs Table -->
+
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Lab Name</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th width="360">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for lab in labs %}
+
+          <tr>
+            <td class="fw-semibold">
+              <i class="bi bi-clipboard2-pulse text-primary me-2"></i>
+
+              {{ lab.lab_name }}
+            </td>
+
+            <td>{{ lab.location or "-" }}</td>
+
+            <td>
+              {% if lab.is_active %}
+              <span class="badge bg-success">Active</span> {% else %}
+              <span class="badge bg-secondary">Inactive</span>
+              {% endif %}
+            </td>
+
+            <td>
+              <div class="d-flex gap-1 flex-nowrap align-items-center">
+                <a
+                  class="btn btn-outline-primary btn-sm"
+                  href="{{ url_for('admin.lab_staff', lab_id=lab.lab_id) }}"
+                >
+                  <i class="bi bi-people"></i>
+                  Staff
+                </a>
+
+                <a
+                  class="btn btn-outline-warning btn-sm"
+                  href="{{ url_for('admin.lab_tests', lab_id=lab.lab_id) }}"
+                >
+                  <i class="bi bi-activity"></i>
+                  Tests
+                </a>
+
+                {% if lab.is_active %}
+
+                <form
+                  method="POST"
+                  action="{{ url_for('admin.deactivate_lab', lab_id=lab.lab_id) }}"
+                  class="d-inline"
+                >
+                  {{ form.hidden_tag() }}
+
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    data-confirm="This will deactivate the lab. Ensure no active staff or pending test requests exist."
+                  >
+                    <i class="bi bi-x-circle"></i>
+                    Deactivate
+                  </button>
+                </form>
+
+                {% else %}
+
+                <form
+                  method="POST"
+                  action="{{ url_for('admin.activate_lab', lab_id=lab.lab_id) }}"
+                  class="d-inline"
+                >
+                  {{ form.hidden_tag() }}
+
+                  <button
+                    class="btn btn-outline-success btn-sm"
+                    data-confirm="This will activate the lab and allow assigning tests and staff."
+                  >
+                    <i class="bi bi-check-circle"></i>
+                    Activate
+                  </button>
+                </form>
+
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+
+          {% else %}
+
+          <tr>
+            <td colspan="4" class="text-center text-muted py-5">
+              <i class="bi bi-clipboard2-x fs-1 d-block mb-3 text-muted"></i>
+
+              <h6>No labs created yet</h6>
+
+              <p class="mb-0">
+                Start by adding a diagnostic lab for this hospital.
+              </p>
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add Lab Modal -->
+
+<div class="modal fade" id="addLabModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-plus-circle me-2"></i>
+          Add Diagnostic Lab
+        </h5>
+
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST" action="{{ url_for('admin.add_lab') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="modal-body">
+          <div class="mb-3">
+            {{ form.lab_name.label(class="form-label") }} {{
+            form.lab_name(class="form-control", placeholder="Enter lab name") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.location.label(class="form-label") }} {{
+            form.location(class="form-control", placeholder="Enter location (optional)") }}
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+
+          {{ form.submit(class="btn btn-primary") }}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

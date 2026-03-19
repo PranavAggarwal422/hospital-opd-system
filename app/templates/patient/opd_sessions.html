@@ -1,0 +1,139 @@
+{% extends "layouts/patient_layout.html" %}
+
+{% block title %}Doctor Sessions{% endblock %}
+
+{% block patient_content %}
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+
+        <a href="{{ url_for('patient.hospitals') }}"
+           class="btn btn-light btn-sm mb-3">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+
+        <h3 class="fw-semibold mb-1">Doctor Sessions</h3>
+        <p class="text-muted mb-0">
+            Choose a doctor session and select a date to book your appointment
+        </p>
+
+    </div>
+</div>
+
+<!-- 🔍 Search Bar -->
+<div class="mb-4">
+    <form method="GET" action="">
+        <div class="input-group shadow-sm">
+
+            <input 
+                type="text" 
+                name="search" 
+                class="form-control"
+                placeholder="Search by doctor name or weekday (e.g. Monday)..."
+                value="{{ request.args.get('search', '') }}"
+            >
+
+            <button class="btn btn-primary px-4 d-flex align-items-center gap-2" type="submit">
+                <i class="bi bi-search"></i>
+                Search
+            </button>
+
+        </div>
+    </form>
+</div>
+
+<div class="row g-4">
+
+{% for s in sessions %}
+
+<div class="col-md-6 col-lg-4">
+    <div class="card session-card h-100 shadow-sm border-0">
+        <div class="card-body d-flex flex-column">
+
+            <!-- Doctor Header -->
+            <div class="d-flex align-items-center mb-3">
+                <div class="doctor-avatar me-3">
+                    <i class="bi bi-person fs-4 text-primary"></i>
+                </div>
+
+                <div>
+                    <h5 class="mb-0">
+                        {{ s.doctor_name }}
+                    </h5>
+                    <p class="text-muted small mb-0">
+                        {{ s.hospital_name }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Session Info -->
+            <div class="session-info mb-3">
+
+                <div class="info-row">
+                    <i class="bi bi-door-open"></i>
+                    Room {{ s.room_no }}
+                </div>
+
+                <div class="info-row">
+                    <i class="bi bi-calendar-week"></i>
+                    {{ s.week_day }}
+                </div>
+
+                <div class="info-row">
+                    <i class="bi bi-clock"></i>
+                    {{ s.start_time }} – {{ s.end_time }}
+                </div>
+
+            </div>
+
+            <hr>
+
+            <!-- Booking Form -->
+            <form method="POST"
+                  action="{{ url_for('patient.book_appointment_route', session_id=s.session_id) }}">
+
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ form.appointment_date.label(class="form-label fw-semibold") }}
+                    {{ form.appointment_date(class="form-control") }}
+                </div>
+
+                <button class="btn btn-primary w-100">
+                    <i class="bi bi-check-circle"></i>
+                    Book Appointment
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+<div class="col-12">
+    <div class="empty-state text-center py-5">
+
+        <i class="bi bi-search fs-1 text-muted"></i>
+
+        {% if request.args.get('search') %}
+            <h5 class="mt-3">No results found</h5>
+            <p class="text-muted">
+                No sessions matched "<strong>{{ request.args.get('search') }}</strong>"
+            </p>
+        {% else %}
+            <h5 class="mt-3">No sessions available</h5>
+            <p class="text-muted mb-0">
+                There are currently no sessions for this department.
+            </p>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

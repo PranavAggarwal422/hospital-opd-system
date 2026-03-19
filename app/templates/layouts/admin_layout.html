@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+{% set endpoint = request.endpoint %}
+
+<div class="admin-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+      <i class="bi bi-hospital"></i>
+      <span>Hospital Admin</span>
+      <hr class="text-secondary opacity-25">
+    </div>
+
+    <nav>
+      <a href="{{ url_for('admin.dashboard') }}"
+         class="nav-link {% if endpoint == 'admin.dashboard' %}active{% endif %}">
+        <i class="bi bi-speedometer2"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="{{ url_for('admin.departments') }}"
+         class="nav-link {% if endpoint.startswith('admin.department') %}active{% endif %}">
+        <i class="bi bi-building"></i>
+        <span>Departments</span>
+      </a>
+
+      <a href="{{ url_for('admin.labs') }}"
+         class="nav-link {% if endpoint.startswith('admin.lab') %}active{% endif %}">
+        <i class="bi bi-clipboard2-pulse"></i>
+        <span>Labs</span>
+      </a>
+
+      <a href="{{ url_for('admin.hospital_tests') }}"
+         class="nav-link {% if endpoint == 'admin.hospital_tests' or endpoint.startswith('admin.test') %}active{% endif %}">
+        <i class="bi bi-activity"></i>
+        <span>Tests</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="{{ url_for('admin.profile') }}"
+         class="nav-link {% if request.endpoint == 'admin.profile' %}active{% endif %}">
+        <i class="bi bi-person-circle"></i>
+        <span>Profile</span>
+      </a>
+
+      <a href="{{ url_for('auth.logout') }}">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+      </a>
+    </div>
+
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <div class="topbar d-flex align-items-center gap-2">
+
+      <button class="btn btn-outline-dark d-md-none" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <div class="topbar-title fw-semibold fs-5">
+        <i class="bi bi-hospital me-2 text-primary"></i>
+        {{ current_user.hospital_name }}
+      </div>
+
+      <div class="ms-auto topbar-user">
+        <span class="badge bg-primary">Admin</span>
+      </div>
+
+    </div>
+
+    <div class="admin-content container-fluid">
+      {% block admin_content %}{% endblock %}
+    </div>
+
+  </main>
+
+</div>
+
+{% endblock %}

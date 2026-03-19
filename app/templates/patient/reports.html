@@ -1,0 +1,122 @@
+{% extends "layouts/patient_layout.html" %}
+{% block title %}My Reports{% endblock %}
+
+{% block patient_content %}
+
+<div class="mb-4">
+  <h3 class="fw-semibold mb-1">My Reports</h3>
+  <p class="text-muted mb-0">Access and download your diagnostic reports</p>
+</div>
+
+<!-- Search Bar -->
+<div class="mb-4">
+  <form method="GET">
+    <div class="input-group shadow-sm">
+      <input
+        type="text"
+        name="search"
+        class="form-control"
+        placeholder="Search by test name, type, or hospital..."
+        value="{{ request.args.get('search', '') }}"
+      />
+
+      <button class="btn btn-primary px-3 d-flex align-items-center gap-2">
+        <i class="bi bi-search"></i>
+        <span class="d-none d-sm-inline">Search</span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Reports Table -->
+<div class="card reports-card">
+  <div class="card-body p-0">
+
+    <!-- RESPONSIVE WRAPPER -->
+    <div class="table-responsive">
+
+      <table class="table align-middle mb-0">
+
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3">Test</th>
+            <th>Type</th>
+            <th>Hospital</th>
+            <th>Date</th>
+            <th>Remarks</th>
+            <th>Report</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for r in reports %}
+
+          <tr>
+            <!-- Test -->
+            <td class="ps-3">
+              <div class="d-flex align-items-center gap-2">
+                <div class="report-icon">
+                  <i class="bi bi-file-earmark-medical"></i>
+                </div>
+                <div class="fw-semibold">{{ r.test_name }}</div>
+              </div>
+            </td>
+
+            <!-- Type -->
+            <td>
+              <span class="badge bg-primary-subtle text-primary">
+                {{ r.test_type }}
+              </span>
+            </td>
+
+            <!-- Hospital -->
+            <td class="text-truncate" style="max-width:140px;">
+              <i class="bi bi-hospital text-muted me-1"></i>
+              {{ r.hospital_name }}
+            </td>
+
+            <!-- Date -->
+            <td>{{ r.completed_time }}</td>
+
+            <!-- Remarks -->
+            <td class="text-truncate" style="max-width:160px;">
+              {{ r.remarks or "-" }}
+            </td>
+
+            <!-- Download -->
+            <td>
+              <a href="{{ url_for('patient.download_report', request_id=r.request_id) }}"
+                class="btn btn-sm btn-outline-success">
+
+                <i class="bi bi-download"></i>
+                <span class="d-none d-md-inline ms-1">Download</span>
+
+              </a>
+            </td>
+          </tr>
+
+          {% else %}
+
+          <tr>
+            <td colspan="6" class="text-center text-muted py-5">
+              <i class="bi bi-file-earmark-x fs-1 d-block mb-2"></i>
+
+              <h6>No reports available</h6>
+
+              <p class="small mb-0">
+                Your diagnostic reports will appear here once available.
+              </p>
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+
+      </table>
+
+    </div> <!-- END table-responsive -->
+
+  </div>
+</div>
+
+{% endblock %}

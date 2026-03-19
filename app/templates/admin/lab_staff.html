@@ -1,0 +1,217 @@
+{% extends "layouts/admin_layout.html" %}
+
+{% block title %}Lab Staff{% endblock %}
+
+{% block admin_content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h3 class="mb-0 text-truncate" style="max-width: 100%;">
+      {{ lab.lab_name }} Staff
+    </h3>
+
+    <p class="text-muted mb-0">
+      Manage staff members working in this laboratory
+    </p>
+  </div>
+
+  <button class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#addStaffModal">
+    <i class="bi bi-plus-lg"></i> Add Staff
+  </button>
+</div>
+
+<!-- Analytics Cards -->
+
+<div class="row g-3 mb-4">
+
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="card stat-card">
+      <i class="bi bi-people"></i>
+      <h5 class="mt-2">{{ staff|length }}</h5>
+      <small class="text-muted">Total Staff</small>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="card stat-card">
+      <i class="bi bi-gear"></i>
+      <h5 class="mt-2">
+        {{ staff | selectattr("staff_role","equalto","Technician") | list | length }}
+      </h5>
+      <small class="text-muted">Technicians</small>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="card stat-card">
+      <i class="bi bi-headset"></i>
+      <h5 class="mt-2">
+        {{ staff | selectattr("staff_role","equalto","Receptionist") | list | length }}
+      </h5>
+      <small class="text-muted">Receptionists</small>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="card stat-card">
+      <i class="bi bi-person-badge"></i>
+      <h5 class="mt-2">
+        {{ staff | selectattr("staff_role","equalto","Manager") | list | length }}
+      </h5>
+      <small class="text-muted">Managers</small>
+    </div>
+  </div>
+
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <a href="{{ url_for('admin.labs') }}"
+     class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left"></i> Back
+  </a>
+</div>
+
+<!-- Staff Table -->
+
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+
+      <table class="table table-hover table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th class="ps-3">Name</th>
+            <th class="ps-3">Role</th>
+            <th class="ps-3">Email</th>
+            <th class="ps-3">Phone</th>
+            <th class="ps-3" width="160">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for s in staff %}
+
+          <tr>
+            <td class="fw-semibold ps-3">
+              <i class="bi bi-person-circle text-primary me-2"></i>
+              {{ s.staff_name }}
+            </td>
+
+            <td>
+              <span class="badge bg-primary">{{ s.staff_role }}</span>
+            </td>
+
+            <td>{{ s.email or "-" }}</td>
+            <td>{{ s.phone or "-" }}</td>
+
+            <td>
+              <div class="d-flex gap-1 flex-nowrap align-items-center">
+
+                <form method="POST"
+                      action="{{ url_for('admin.deactivate_lab_staff_route', lab_id=lab.lab_id, staff_id=s.staff_id) }}"
+                      class="d-inline">
+                  {{ form.hidden_tag() }}
+
+                  <button class="btn btn-outline-danger btn-sm"
+                          data-confirm="This will remove the staff member from the lab and deactivate their account.">
+                    
+                    <i class="bi bi-person-x"></i>
+                    <span>Remove</span>
+
+                  </button>
+                </form>
+
+              </div>
+            </td>
+
+          </tr>
+
+          {% else %}
+
+          <tr>
+            <td colspan="5" class="text-center text-muted py-5">
+              <i class="bi bi-people fs-1 d-block mb-3 text-muted"></i>
+              <h6>No staff members added yet</h6>
+              <p class="mb-0">
+                Start by adding staff members to this laboratory.
+              </p>
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="addStaffModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-person-plus me-2"></i>
+          Add Lab Staff
+        </h5>
+
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST"
+            action="{{ url_for('admin.add_lab_staff', lab_id=lab.lab_id) }}">
+
+        {{ form.hidden_tag() }}
+
+        <div class="modal-body">
+
+          <div class="mb-3">
+            {{ form.staff_name.label(class="form-label") }}
+            {{ form.staff_name(class="form-control", placeholder="Enter staff name") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.staff_role.label(class="form-label") }}
+            {{ form.staff_role(class="form-select") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control", placeholder="Enter email") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.phone.label(class="form-label") }}
+            {{ form.phone(class="form-control", placeholder="Enter phone") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.confirm_password.label(class="form-label") }}
+            {{ form.confirm_password(class="form-control") }}
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+          {{ form.submit(class="btn btn-primary") }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

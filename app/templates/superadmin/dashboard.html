@@ -1,0 +1,188 @@
+{% extends "layouts/superadmin_layout.html" %}
+
+{% block title %}SuperAdmin Dashboard{% endblock %}
+
+{% block superadmin_content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h3 class="mb-0">Hospitals</h3>
+    <p class="text-muted mb-0">Manage hospitals and hospital administrators</p>
+  </div>
+
+  <button
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#addHospitalModal"
+  >
+    <i class="bi bi-plus-lg"></i> Add Hospital
+  </button>
+</div>
+
+<!-- Stats -->
+
+<div class="row g-3 mb-4">
+  <div class="col-12 col-md-4">
+    <div class="card stat-card">
+      <i class="bi bi-hospital"></i>
+      <h4>{{ hospitals|length }}</h4>
+      <p class="text-muted">Total Hospitals</p>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-4">
+    <div class="card stat-card">
+      <i class="bi bi-check-circle"></i>
+      <h4>{{ hospitals | selectattr("is_active") | list | length }}</h4>
+      <p class="text-muted">Active Hospitals</p>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-4">
+    <div class="card stat-card">
+      <i class="bi bi-x-circle"></i>
+      <h4>{{ hospitals | rejectattr("is_active") | list | length }}</h4>
+      <p class="text-muted">Inactive Hospitals</p>
+    </div>
+  </div>
+</div>
+
+<!-- Hospital Table -->
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Hospital</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Pincode</th>
+            <th>Status</th>
+            <th width="260">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for h in hospitals %}
+
+          <tr>
+            <td class="fw-semibold">{{ h.hospital_name }}</td>
+            <td>{{ h.city }}</td>
+            <td>{{ h.state }}</td>
+            <td>{{ h.pincode }}</td>
+
+            <td>
+              {% if h.is_active %}
+              <span class="badge bg-success">Active</span>
+              {% else %}
+              <span class="badge bg-secondary">Inactive</span>
+              {% endif %}
+            </td>
+
+            <td>
+              <div class="d-flex gap-1 flex-wrap flex-md-nowrap">
+
+                <a
+                  href="{{ url_for('superadmin.hospital_admins', hospital_id=h.hospital_id) }}"
+                  class="btn btn-outline-info btn-sm"
+                >
+                  <i class="bi bi-people"></i> Admins
+                </a>
+
+                {% if h.is_active %}
+
+                <form
+                  method="POST"
+                  action="{{ url_for('superadmin.deactivate', hospital_id=h.hospital_id) }}"
+                >
+                  {{ form.hidden_tag() }}
+
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    data-confirm="Are you sure you want to deactivate this hospital? Patients will not be able to book appointment"
+                  >
+                    <i class="bi bi-hospital"></i> Deactivate
+                  </button>
+                </form>
+
+                {% else %}
+
+                <form
+                  method="POST"
+                  action="{{ url_for('superadmin.activate', hospital_id=h.hospital_id) }}"
+                >
+                  {{ form.hidden_tag() }}
+
+                  <button class="btn btn-outline-success btn-sm">
+                    Activate
+                  </button>
+                </form>
+
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add Hospital Modal -->
+
+<div class="modal fade" id="addHospitalModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Hospital</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST" action="{{ url_for('superadmin.add_hospital') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="modal-body">
+          <div class="mb-3">
+            {{ form.hospital_name.label(class="form-label") }}
+            {{ form.hospital_name(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.address.label(class="form-label") }}
+            {{ form.address(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.city.label(class="form-label") }}
+            {{ form.city(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.state.label(class="form-label") }}
+            {{ form.state(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.pincode.label(class="form-label") }}
+            {{ form.pincode(class="form-control") }}
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          {{ form.submit(class="btn btn-primary") }}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

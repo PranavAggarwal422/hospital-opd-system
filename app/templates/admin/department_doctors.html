@@ -1,0 +1,231 @@
+{% extends "layouts/admin_layout.html" %}
+
+{% block title %} Doctors - {{ department.department_name }} {% endblock %}
+
+{% block admin_content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <a href="{{ url_for('admin.departments') }}"
+       class="btn btn-outline-secondary btn-sm mb-2">
+      <i class="bi bi-arrow-left"></i> Back
+    </a>
+
+    <h3 class="mb-0 text-truncate" style="max-width: 100%;">
+      {{ department.department_name }} Doctors
+    </h3>
+
+    <p class="text-muted mb-0">Manage doctors for this department</p>
+  </div>
+
+  <button class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#addDoctorModal">
+    <i class="bi bi-plus-lg"></i> Add Doctor
+  </button>
+</div>
+
+<!-- Analytics Cards -->
+
+<div class="row g-3 mb-4">
+
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="card stat-card">
+      <i class="bi bi-person-badge"></i>
+      <h5 class="mt-2">{{ doctors|length }}</h5>
+      <small class="text-muted">Total Doctors</small>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="card stat-card">
+      <i class="bi bi-gender-male"></i>
+      <h5 class="mt-2">
+        {{ doctors | selectattr("gender","equalto","Male") | list | length }}
+      </h5>
+      <small class="text-muted">Male</small>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="card stat-card">
+      <i class="bi bi-gender-female"></i>
+      <h5 class="mt-2">
+        {{ doctors | selectattr("gender","equalto","Female") | list | length }}
+      </h5>
+      <small class="text-muted">Female</small>
+    </div>
+  </div>
+
+</div>
+
+<!-- Doctors Table -->
+
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th class="ps-4">Name</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th width="200">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for doctor in doctors %}
+
+          <tr class="{% if not doctor.is_active %}table-light text-muted{% endif %}">
+
+            <td class="fw-semibold ps-4">
+              <i class="bi bi-person-circle text-primary me-2"></i>
+              {{ doctor.doctor_name }}
+            </td>
+
+            <td>
+              <span class="badge bg-light text-dark border">
+                {{ doctor.gender }}
+              </span>
+            </td>
+
+            <td>{{ doctor.email or "-" }}</td>
+            <td>{{ doctor.phone or "-" }}</td>
+
+            <td>
+              {% if doctor.is_active %}
+
+              <div class="d-flex flex-wrap">
+
+                <form method="POST"
+                      action="{{ url_for('admin.remove_doctor', doctor_id=doctor.doctor_id) }}"
+                      class="d-inline">
+                  {{ form.hidden_tag() }}
+
+                  <button
+                    class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+                    data-confirm="This will deactivate the doctor and ALL their sessions. Patients will not be able to book future appointments. Existing appointments will remain unaffected.">
+                    
+                    <i class="bi bi-person-x"></i>
+                    <span >Deactivate</span>
+
+                  </button>
+                </form>
+
+              </div>
+
+              {% else %}
+
+              <span class="badge bg-secondary-subtle text-secondary">
+                Inactive
+              </span>
+
+              {% endif %}
+            </td>
+
+          </tr>
+
+          {% else %}
+
+          <tr>
+            <td colspan="5" class="text-center py-5">
+              <div class="d-flex flex-column align-items-center text-muted">
+
+                <i class="bi bi-person-x fs-1 mb-3 opacity-50"></i>
+
+                <h6 class="fw-semibold">No doctors found</h6>
+
+                <p class="mb-3 small">
+                  Start by adding a doctor to this department.
+                </p>
+
+                <button class="btn btn-sm btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addDoctorModal">
+                  <i class="bi bi-plus-lg"></i> Add Doctor
+                </button>
+
+              </div>
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="addDoctorModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-person-plus me-2"></i>
+          Add Doctor
+        </h5>
+
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST"
+            action="{{ url_for('admin.add_doctor', department_id=department.department_id) }}">
+
+        {{ form.hidden_tag() }}
+
+        <div class="modal-body">
+
+          <div class="mb-3">
+            {{ form.doctor_name.label(class="form-label") }}
+            {{ form.doctor_name(class="form-control",
+                                placeholder="Enter doctor name",
+                                autofocus=True) }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.gender.label(class="form-label") }}
+            {{ form.gender(class="form-select") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control", placeholder="Enter email") }}
+            <div class="form-text">Provide either email or phone</div>
+          </div>
+
+          <div class="mb-3">
+            {{ form.phone.label(class="form-label") }}
+            {{ form.phone(class="form-control", placeholder="Enter phone") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.confirm_password.label(class="form-label") }}
+            {{ form.confirm_password(class="form-control") }}
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+          {{ form.submit(class="btn btn-primary") }}
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "layouts/patient_layout.html" %} {% block title %}Appointment
+Feedback{% endblock %} {% block patient_content %}
+
+<div class="mb-4">
+  <h3 class="fw-semibold">Appointment Feedback</h3>
+
+  <p class="text-muted">Share your experience for appointment</p>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <form method="POST">
+          {{ form.hidden_tag() }}
+
+          <!-- Star Rating -->
+
+          <div class="mb-4 text-center">
+            <label class="form-label fw-semibold d-block">
+              Rate Your Experience
+            </label>
+
+            <div class="star-rating">
+              <i class="bi bi-star-fill star" data-value="1"></i>
+              <i class="bi bi-star-fill star" data-value="2"></i>
+              <i class="bi bi-star-fill star" data-value="3"></i>
+              <i class="bi bi-star-fill star" data-value="4"></i>
+              <i class="bi bi-star-fill star" data-value="5"></i>
+            </div>
+
+            <input type="hidden" name="rating" id="rating-value" required />
+          </div>
+
+          <div class="mb-3">
+            {{ form.comment.label(class="form-label") }} {{
+            form.comment(class="form-control", rows="4", placeholder="Optional
+            feedback about doctor or hospital") }}
+          </div>
+
+          <div class="d-flex justify-content-end">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block scripts %}
+
+<script>
+  const stars = document.querySelectorAll(".star");
+  const ratingInput = document.getElementById("rating-value");
+
+  stars.forEach((star) => {
+    star.addEventListener("click", function () {
+      let rating = this.dataset.value;
+
+      ratingInput.value = rating;
+
+      stars.forEach((s) => {
+        s.classList.remove("active");
+      });
+
+      for (let i = 0; i < rating; i++) {
+        stars[i].classList.add("active");
+      }
+    });
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "layouts/patient_layout.html" %}
+
+{% block title %}Hospitals{% endblock %}
+
+{% block patient_content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-semibold mb-0">Hospitals</h3>
+        <p class="text-muted mb-0">
+            Select a hospital to explore departments and book appointments
+        </p>
+    </div>
+</div>
+
+<!-- Search Bar -->
+<div class="mb-4">
+    <form method="GET" action="{{ url_for('patient.hospitals') }}">
+        <div class="input-group shadow-sm">
+
+            <input 
+                type="text" 
+                name="search" 
+                class="form-control"
+                placeholder="Search hospitals by name, city, or state..."
+                value="{{ request.args.get('search', '') }}"
+            >
+
+            <button class="btn btn-primary px-4 d-flex align-items-center gap-2" type="submit">
+                <i class="bi bi-search"></i>
+                Search
+            </button>
+
+        </div>
+    </form>
+</div>
+
+<!-- Hospital Grid -->
+<div class="row g-4">
+
+{% for h in hospitals %}
+
+<div class="col-md-6 col-lg-4">
+    <div class="card hospital-card h-100 shadow-sm border-0">
+        <div class="card-body d-flex flex-column">
+
+            <div class="d-flex align-items-center mb-3">
+                <div class="hospital-icon me-3">
+                    <i class="bi bi-hospital fs-4 text-primary"></i>
+                </div>
+
+                <div>
+                    <h5 class="mb-0">{{ h.hospital_name }}</h5>
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-geo-alt"></i>
+                        {{ h.city }}, {{ h.state }}
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-muted small mb-4">
+                Browse departments and available doctors in this hospital.
+            </p>
+
+            <div class="mt-auto">
+                <a href="{{ url_for('patient.hospital_departments', hospital_id=h.hospital_id) }}"
+                   class="btn btn-primary w-100">
+                    View Departments
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+<div class="col-12">
+    <div class="empty-state text-center py-5">
+
+        <i class="bi bi-search fs-1 text-muted"></i>
+
+        {% if request.args.get('search') %}
+            <h5 class="mt-3">No results found</h5>
+            <p class="text-muted">
+                No hospitals matched "<strong>{{ request.args.get('search') }}</strong>"
+            </p>
+        {% else %}
+            <h5 class="mt-3">No hospitals available</h5>
+            <p class="text-muted mb-0">
+                Hospitals will appear here once available.
+            </p>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

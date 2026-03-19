@@ -1,0 +1,310 @@
+/* Layout */
+.admin-wrapper{
+display:flex;
+min-height:100vh;
+background:#f3f4f6;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: #111827;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.sidebar .logo {
+  font-size: 20px;
+  font-weight: 600;
+  padding: 0 25px 25px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+.sidebar nav a {
+  color: #d1d5db;
+  text-decoration: none;
+  padding: 12px 25px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  transition: 0.2s;
+}
+.sidebar nav a:hover {
+  background: #1f2937;
+  color: white;
+  transform: translateX(4px);
+}
+.sidebar nav a.active {
+  background: #2563eb;
+  color: white;
+  border-left: 4px solid #60a5fa;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px 25px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-footer a{
+color:#d1d5db;
+text-decoration:none;
+display:flex;
+gap:8px;
+align-items:center;
+}
+
+.sidebar-footer a:hover{
+color:white;
+}
+
+
+/* Overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 1040;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Main */
+
+.admin-main{
+flex:1;
+display:flex;
+flex-direction:column;
+}
+
+/* Topbar */
+
+.topbar {
+  height: 60px;
+  background: white;
+  padding: 0 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.topbar-title{
+font-weight:600;
+font-size:16px;
+}
+
+/* Content */
+
+.admin-content{
+padding:25px;
+}
+
+/* Cards */
+
+.card{
+border:none;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.stat-card{
+padding:20px;
+text-align:center;
+transition: all 0.25s ease;
+}
+
+.stat-card:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.stat-card i{
+font-size:30px;
+margin-bottom:10px;
+color:#2563eb;
+}
+
+/* Dashboard */
+
+.dashboard-card {
+border:none;
+border-radius:12px;
+transition:0.25s;
+}
+
+.dashboard-card:hover {
+transform: translateY(-4px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.dashboard-icon {
+font-size: 2.5rem;
+opacity: 0.8;
+}
+
+/* Tables */
+
+.table {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table thead{
+font-size:14px;
+background:#f9fafb;
+}
+
+.table tbody tr:hover{
+background:#f3f4f6;
+}
+
+/* Buttons */
+
+.btn {
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+/* Badges */
+
+.badge{
+font-size:12px;
+padding:6px 10px;
+border-radius:6px;
+}
+
+.dashboard-card{
+border:none;
+border-radius:14px;
+transition:all .25s ease;
+background:white;
+}
+
+.dashboard-card:hover{
+transform:translateY(-5px);
+box-shadow:0 15px 35px rgba(0,0,0,0.12);
+}
+
+.dashboard-icon{
+font-size:2.2rem;
+opacity:.8;
+}
+
+/* Responsive icon box */
+.icon-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(37, 99, 235, 0.08);
+  font-size: 20px;
+}
+
+
+/* RESPONSIVE */
+/* Mobile topbar text fix */
+
+@media (max-width: 768px) {
+  .icon-box {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .dashboard-card h3 {
+    font-size: 18px;
+  }
+  
+  p {
+    font-size: 12px;
+  }
+
+  .admin-wrapper {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: -240px;
+    top: 0;
+    height: 100%;
+    z-index: 1050;
+    width: 240px;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .admin-content {
+    padding: 15px;
+  }
+
+  .topbar-title {
+    font-size: 14px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+  }
+
+  /* Reduce input size */
+  .form-control,
+  .form-select {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  /* Fix date input specifically */
+  input[type="date"] {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  /* Reduce helper text */
+  .form-hint {
+    font-size: 12px;
+  }
+
+  /* Labels slightly smaller */
+  .form-label {
+    font-size: 13px;
+  }
+
+  /* Card padding tighter */
+  .card-body {
+    padding: 16px;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}

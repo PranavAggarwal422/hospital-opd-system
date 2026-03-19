@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+
+{% set endpoint = request.endpoint %}
+
+<div class="admin-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+      <i class="bi bi-person-badge"></i>
+      <span>Doctor Portal</span>
+    </div>
+
+    <nav>
+      <a href="{{ url_for('doctor.dashboard') }}"
+         class="nav-link {% if endpoint == 'doctor.dashboard' %}active{% endif %}">
+        <i class="bi bi-speedometer2"></i>
+        <span>Dashboard</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="{{ url_for('doctor.profile') }}"
+         class="nav-link {% if endpoint == 'doctor.profile' %}active{% endif %}">
+        <i class="bi bi-person-circle"></i>
+        <span>Profile</span>
+      </a>
+
+      <a href="{{ url_for('auth.logout') }}">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <!-- Topbar -->
+    <div class="topbar d-flex align-items-center gap-2">
+
+      <!-- Mobile toggle -->
+      <button class="btn btn-outline-dark d-md-none" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <!-- Title -->
+      <div class="topbar-title fw-semibold">
+        <i class="bi bi-hospital me-2 text-primary"></i>
+        {{ current_user.hospital_name }}
+      </div>
+
+      <!-- Right -->
+      <div class="ms-auto topbar-user">
+        <span class="badge bg-success">Doctor</span>
+      </div>
+
+    </div>
+
+    <!-- Content -->
+    <div class="admin-content container-fluid">
+      {% block doctor_content %}{% endblock %}
+    </div>
+
+  </main>
+
+</div>
+
+{% endblock %}

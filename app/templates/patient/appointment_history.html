@@ -1,0 +1,147 @@
+{% extends "layouts/patient_layout.html" %} {% block title %}My Appointments{%
+endblock %} {% block patient_content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="fw-semibold mb-0">My Appointments</h3>
+
+    <p class="text-muted mb-0">View and manage your appointment history</p>
+  </div>
+</div>
+
+<!-- Search Bar -->
+<div class="mb-4">
+  <form method="GET" action="">
+    <div class="input-group shadow-sm">
+      <input
+        type="text"
+        name="search"
+        class="form-control"
+        placeholder="Search by doctor, hospital, or department..."
+        value="{{ request.args.get('search', '') }}"
+      />
+
+      <button
+        class="btn btn-primary px-4 d-flex align-items-center gap-2"
+        type="submit"
+      >
+        <i class="bi bi-search"></i>
+        Search
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="card appointment-history-card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+     
+    <table class="table align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Date</th>
+          <th>Doctor</th>
+          <th>Hospital</th>
+          <th>Department</th>
+          <th>Token</th>
+          <th>Status</th>
+          <th width="220">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for a in appointments %}
+
+        <tr>
+          <td class="fw-semibold">{{ a.appointment_date }}</td>
+
+          <td>
+            <div class="fw-semibold">{{ a.doctor_name }}</div>
+          </td>
+
+          <td>{{ a.hospital_name }}</td>
+
+          <td>{{ a.department_name }}</td>
+
+          <td>
+            <span class="token-badge"> {{ a.token_no }} </span>
+          </td>
+
+          <td>
+            {% if a.appointment_status == "Booked" %}
+
+            <span class="badge bg-success-subtle text-success">
+              <i class="bi bi-check-circle"></i>
+              Booked
+            </span>
+
+            {% elif a.appointment_status == "Expired" %}
+
+            <span class="badge bg-primary-subtle text-primary">
+              <i class="bi bi-check2-all"></i>
+              Completed
+            </span>
+
+            {% elif a.appointment_status == "Cancelled" %}
+
+            <span class="badge bg-secondary-subtle text-secondary">
+              <i class="bi bi-x-circle"></i>
+              Cancelled
+            </span>
+
+            {% endif %}
+          </td>
+
+          <td>
+            <div class="d-flex gap-2">
+              <a
+                href="{{ url_for('patient.appointment_details', appointment_id=a.appointment_id) }}"
+                class="btn btn-sm btn-outline-primary"
+              >
+                <i class="bi bi-eye"></i>
+                Details
+              </a>
+
+              {% if a.appointment_status == "Booked" %}
+
+              <form
+                method="POST"
+                action="{{ url_for('patient.cancel_appointment_route', appointment_id=a.appointment_id) }}"
+              >
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  data-confirm="Are you sure you want to cancel this appointment?
+                  Once cancelled, you cannot rebook an appointment for the same department on this date. You will need to choose a different date."
+                >
+                  <i class="bi bi-x-circle"></i>
+                  Cancel
+                </button>
+              </form>
+
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+
+        {% else %}
+
+        <tr>
+          <td colspan="7" class="text-center text-muted py-5">
+            <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
+
+            <h6>No appointments found</h6>
+
+            <p class="small mb-0">
+              Book your first appointment to see it here.
+            </p>
+          </td>
+        </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+{% endblock %}
