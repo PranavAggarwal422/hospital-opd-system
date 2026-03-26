@@ -3,6 +3,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin
 from .config import Config 
 from app.database.db import get_db_connection
+from flask import redirect, url_for
 
 bcrypt = Bcrypt()
 login_manager = LoginManager()
@@ -127,5 +128,9 @@ def create_app() :
     app.register_blueprint(admin_bp)
     app.register_blueprint(labstaff_bp)
     app.register_blueprint(superadmin_bp)
+
+    @app.route("/")
+    def home():
+        return redirect(url_for("auth.login"))
 
     return app
