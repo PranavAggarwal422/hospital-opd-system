@@ -224,6 +224,15 @@ opacity:.8;
 }
 
 
+.modal {
+  overflow-y: auto;
+}
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+
 /* RESPONSIVE */
 /* Mobile topbar text fix */
 
