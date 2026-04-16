@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<!-- 🔍 Search Bar -->
+<!-- Search Bar -->
 <div class="mb-4">
     <form method="GET" action="">
         <div class="input-group shadow-sm">
@@ -44,7 +44,7 @@
 
 <div class="row g-4">
 
-{% for s in sessions %}
+{% for doctor_id, doctor_sessions in doctors.items() %}
 
 <div class="col-md-6 col-lg-4">
     <div class="card session-card h-100 shadow-sm border-0">
@@ -58,48 +58,49 @@
 
                 <div>
                     <h5 class="mb-0">
-                        {{ s.doctor_name }}
+                        {{ doctor_sessions[0].doctor_name }}
                     </h5>
                     <p class="text-muted small mb-0">
-                        {{ s.hospital_name }}
+                        {{ doctor_sessions[0].hospital_name }}
                     </p>
                 </div>
             </div>
 
-            <!-- Session Info -->
-            <div class="session-info mb-3">
-
-                <div class="info-row">
-                    <i class="bi bi-door-open"></i>
-                    Room {{ s.room_no }}
-                </div>
-
-                <div class="info-row">
-                    <i class="bi bi-calendar-week"></i>
-                    {{ s.week_day }}
-                </div>
-
-                <div class="info-row">
-                    <i class="bi bi-clock"></i>
-                    {{ s.start_time }} – {{ s.end_time }}
-                </div>
-
-            </div>
-
             <hr>
 
-            <!-- Booking Form -->
+            <!-- SESSION SELECT -->
             <form method="POST"
-                  action="{{ url_for('patient.book_appointment_route', session_id=s.session_id) }}">
+                  action="{{ url_for('patient.book_appointment_route') }}"
+                  class="d-flex flex-column flex-grow-1">
 
                 {{ form.hidden_tag() }}
 
+                <!-- Select Session -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        Select Session
+                    </label>
+
+                    <select name="session_id" class="form-select" required>
+                        <option value="">Choose a session</option>
+
+                        {% for s in doctor_sessions %}
+                        <option value="{{ s.session_id }}">
+                            {{ s.week_day }} | {{ s.start_time }} – {{ s.end_time }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <!-- Date -->
                 <div class="mb-3">
                     {{ form.appointment_date.label(class="form-label fw-semibold") }}
                     {{ form.appointment_date(class="form-control") }}
                 </div>
 
-                <button class="btn btn-primary w-100">
+                <!-- Button -->
+                <button class="btn btn-primary mt-auto w-100">
                     <i class="bi bi-check-circle"></i>
                     Book Appointment
                 </button>
@@ -135,5 +136,4 @@
 {% endfor %}
 
 </div>
-
 {% endblock %}

@@ -5,86 +5,62 @@ def get_sessions_by_department(department_id, search=None):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
+        base_query = """
+            SELECT
+                s.session_id,
+                s.week_day,
+                s.start_time,
+                s.end_time,
+                s.max_tokens_per_session,
+
+                d.doctor_id,
+                d.doctor_name,
+
+                o.room_no,
+                h.hospital_name
+
+            FROM OPDSession s
+
+            JOIN Doctor d
+                ON s.doctor_id = d.doctor_id
+
+            JOIN OPD o
+                ON s.opd_id = o.opd_id
+
+            JOIN Hospital h
+                ON o.hospital_id = h.hospital_id
+
+            WHERE o.department_id = %s
+            AND s.is_active = TRUE
+            AND d.is_active = TRUE
+            AND o.is_active = TRUE
+        """
+
         if search:
-            query = """
-                SELECT
-                    s.session_id,
-                    s.week_day,
-                    s.start_time,
-                    s.end_time,
-                    s.max_tokens_per_session,
-
-                    d.doctor_name,
-                    o.room_no,
-                    h.hospital_name
-
-                FROM OPDSession s
-
-                JOIN Doctor d
-                    ON s.doctor_id = d.doctor_id
-
-                JOIN OPD o
-                    ON s.opd_id = o.opd_id
-
-                JOIN Hospital h
-                    ON o.hospital_id = h.hospital_id
-
-                WHERE o.department_id = %s
-                AND s.is_active = TRUE
-                AND d.is_active = TRUE
-                AND o.is_active = TRUE
+            base_query += """
                 AND (
                     d.doctor_name LIKE %s
                     OR s.week_day LIKE %s
                 )
-
-                ORDER BY FIELD(s.week_day,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'),s.start_time
             """
 
+        base_query += """
+            ORDER BY 
+                FIELD(s.week_day,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'),
+                s.start_time
+        """
+
+        if search:
             like = f"%{search}%"
-            cursor.execute(query, (department_id, like, like))
-
+            cursor.execute(base_query, (department_id, like, like))
         else:
-            query = """
-                SELECT
-                    s.session_id,
-                    s.week_day,
-                    s.start_time,
-                    s.end_time,
-                    s.max_tokens_per_session,
+            cursor.execute(base_query, (department_id,))
 
-                    d.doctor_name,
-                    o.room_no,
-                    h.hospital_name
-
-                FROM OPDSession s
-
-                JOIN Doctor d
-                    ON s.doctor_id = d.doctor_id
-
-                JOIN OPD o
-                    ON s.opd_id = o.opd_id
-
-                JOIN Hospital h
-                    ON o.hospital_id = h.hospital_id
-
-                WHERE o.department_id = %s
-                AND s.is_active = TRUE
-                AND d.is_active = TRUE
-                AND o.is_active = TRUE
-
-                ORDER BY FIELD(s.week_day,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'),
-                         s.start_time
-            """
-
-            cursor.execute(query, (department_id,))
-
-        sessions = cursor.fetchall()
-        return sessions
-
+        return cursor.fetchall()
+    
     except Exception as e:
         raise
-
+    
     finally:
         cursor.close()
         conn.close()

@@ -5,6 +5,7 @@ from app.services.patient.appointment_service import *
 from app.forms.patient.appointment_form import BookAppointmentForm
 from app.routes.helpers import flash_form_errors
 from mysql.connector import Error
+from collections import defaultdict
 from . import patient_bp
 
 @patient_bp.route("/departments/<int:department_id>/sessions")
@@ -12,20 +13,36 @@ from . import patient_bp
 @role_required("Patient")
 def department_sessions(department_id):
     search = request.args.get("search", "").strip()
-
     try:
         sessions = get_sessions_by_department(department_id, search=search)
     except Exception as e:
         flash("Something went wrong while fetching sessions.", "danger")
         sessions = []
 
-    form = BookAppointmentForm()
-    return render_template("patient/opd_sessions.html", sessions=sessions, form=form)
+    # GROUP BY DOCTOR_ID
+    doctors = defaultdict(list)
+    for s in sessions:
+        doctors[s["doctor_id"]].append(s)
 
-@patient_bp.route("/sessions/<int:session_id>/book", methods=["POST"])
+    form = BookAppointmentForm()
+    return render_template("patient/opd_sessions.html", doctors=doctors, form=form)
+
+
+@patient_bp.route("/sessions/book", methods=["POST"])
 @login_required
 @role_required("Patient")
-def book_appointment_route(session_id):
+def book_appointment_route():
+    session_id = request.form.get("session_id")
+    if not session_id:
+        flash("Please select a session.", "danger")
+        return redirect(request.referrer or url_for("patient.dashboard"))
+    
+    try:
+        session_id = int(session_id)
+    except ValueError:
+        flash("Invalid session selected.", "danger")
+        return redirect(request.referrer or url_for("patient.dashboard"))
+    
     form = BookAppointmentForm()
 
     if form.validate_on_submit():
