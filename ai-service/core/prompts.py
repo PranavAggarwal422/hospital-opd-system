@@ -1,15 +1,3 @@
-from google import genai
-from google.genai import types
-
-from fastapi import HTTPException
-from dotenv import load_dotenv
-import os
-import uuid 
-
-load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY")
-client = genai.Client(api_key=api_key)
-
 SYSTEM_PROMPT = """
 You are MedAssist AI, an AI-powered virtual medical assistant for a government hospital management platform.
 
@@ -73,37 +61,3 @@ politely redirect the conversation toward healthcare or hospital assistance topi
 You are an assistant designed for healthcare guidance and hospital support,
 not a replacement for licensed medical professionals.
 """
-
-chat_sessions = {}
-
-def create_chat_session() : 
-    session_id = str(uuid.uuid4())
-    chat = client.chats.create(
-        model="gemini-2.5-flash",
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
-            temperature = 0.1,
-            max_output_tokens=500
-            )
-    )
-
-    chat_sessions[session_id] = chat
-    return session_id 
-
-def send_message(session_id, prompt) : 
-    if session_id not in chat_sessions : 
-        raise HTTPException(status_code=404,detail="Invalid or expired session")
-    try:
-        chat = chat_sessions[session_id]
-        response = chat.send_message(prompt)
-        return response.text
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail="AI service temporarily unavailable"
-        )
-
-def delete_chat_session(session_id) : 
-    if session_id in chat_sessions : 
-        del chat_sessions[session_id]
