@@ -1,16 +1,19 @@
-import mysql.connector 
-from flask import current_app 
+import mysql.connector
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-def get_db_connection() : 
-    try : 
+def get_db_connection():
+    try:
         connection = mysql.connector.connect(
-            host = current_app.config["MYSQL_HOST"], 
-            user = current_app.config["MYSQL_USER"], 
-            password = current_app.config["MYSQL_PASSWORD"], 
-            database = current_app.config["MYSQL_DB"],
-            port= current_app.config["MYSQL_PORT"]
+            host=os.getenv("MYSQL_HOST"),
+            user=os.getenv("MYSQL_USER"),
+            password=os.getenv("MYSQL_PASSWORD"),
+            database=os.getenv("MYSQL_DB"),
+            port=int(os.getenv("MYSQL_PORT"))
         )
-        return connection 
+        return connection
+
+    except mysql.connector.Error as err:
+        raise err
     
-    except mysql.connector.Error as err : 
-        raise err 
