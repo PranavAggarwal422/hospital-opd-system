@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from models.schemas import ChatRequest, ChatResponse, SessionResponse
 from services.llm_service import create_chat_session, send_message, delete_chat_session
+from services.planner_service import generate_execution_plan
+from services.executor_service import execute_plan
+from services.llm_service import get_planner_chat
 
 app = FastAPI()
 
@@ -31,3 +34,34 @@ def end_chat(session_id: str):
     return {
         "message": "Chat Session Deleted"
     }
+
+
+# DEBUG EXECUTION ROUTE
+@app.post("/execute")
+def execute(request: ChatRequest):
+    plan = generate_execution_plan(session_id=request.session_id, prompt=request.prompt)
+
+    print("\n========== EXECUTION PLAN ==========")
+    print(plan)
+    print("====================================\n")
+
+    result = execute_plan(plan)
+
+    # Inject clarification events into planner memory
+    try:
+        planner_chat = get_planner_chat(request.session_id)
+
+        for task_result in result.results:
+            if task_result.requires_clarification:
+                planner_chat.send_message(
+                    f"""
+                    System clarification request:
+                    {task_result.clarification_question}
+                    """
+                )
+
+    except Exception as e:
+        print("Planner memory injection failed:")
+        print(e)
+
+    return result.model_dump()

@@ -15,28 +15,31 @@ class SessionResponse(BaseModel):
 
 
 class IntentType(str, Enum):
-    # General conversation or unrecognized intent
+    # General conversation or unrecognized healthcare intent
     GENERAL_CHAT = "general_chat"
 
-    # user describes symptoms, pain, illness, or medical problems
+    # User describes symptoms, pain, illness, or medical problems
     SYMPTOM_ANALYSIS = "symptom_analysis"
 
-    # user wants to search hospitals using hospital names, cities, states, or locations
+    # User wants to search hospitals using hospital names, cities, states, or locations
     HOSPITAL_SEARCH = "hospital_search"
 
-    # user wants department recommendations or specialist guidance.
+    # User wants specialist or department recommendations based on symptoms/problems
+    DEPARTMENT_RECOMMENDATION = "department_recommendation"
+
+    # User wants to search/retrieve departments from hospitals
     DEPARTMENT_SEARCH = "department_search"
 
-    # user wants doctor availability, OPD sessions, timings, schedules, or appointment slots.
+    # User wants doctor availability, OPD sessions, timings, schedules, or appointment slots
     SESSION_SEARCH = "session_search"
 
-    # user wants help booking, cancelling, rescheduling, or managing appointments.
+    # User wants help booking, cancelling, rescheduling, or managing appointments
     APPOINTMENT_GUIDANCE = "appointment_guidance"
 
-    # user asks about reports, medical tests, MRI, X-ray, prescriptions, or report access
+    # User asks about reports, medical tests, MRI, X-ray, prescriptions, or report access
     REPORT_GUIDANCE = "report_guidance"
 
-    # Used for hospital workflows, policies, token systems, required documents, timings, or general hospital FAQs.
+    # Hospital workflows, policies, token systems, required documents, timings, FAQs
     FAQ_QUERY = "faq_query"
 
 class Task(BaseModel):
@@ -59,3 +62,19 @@ class Task(BaseModel):
 
 class ExecutionPlan(BaseModel):
     tasks: List[Task]
+
+
+class ClarificationResult(BaseModel):
+    question: str
+
+class TaskResult(BaseModel):
+    intent: IntentType
+    success: bool
+    requires_clarification: bool = False
+    clarification_question: Optional[str] = None
+    data: Optional[dict] = None
+    message: Optional[str] = None
+
+class ExecutionResult(BaseModel):
+    results: List[TaskResult]
+
