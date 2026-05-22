@@ -48,7 +48,7 @@ class Task(BaseModel):
 
     # Flexible hospital-related search context.
     # Can contain hospital name, city, state, or general location query.
-    hospital_query: Optional[str] = None
+    hospital_queries: Optional[List[str]] = None
 
     # List of departments extracted from the query.
     # Used for department recommendations and session lookup.
@@ -77,4 +77,13 @@ class TaskResult(BaseModel):
 
 class ExecutionResult(BaseModel):
     results: List[TaskResult]
+
+
+class DepartmentRecommendationResponse(BaseModel):
+    departments: list[str]
+    explanation: str
+
+class SymptomAnalysisResponse(BaseModel):
+    analysis: str
+    suggested_departments: Optional[list[str]] = None
 

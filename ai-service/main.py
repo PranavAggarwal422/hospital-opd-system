@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from models.schemas import ChatRequest, ChatResponse, SessionResponse
-from services.llm_service import create_chat_session, send_message, delete_chat_session
+from models.schemas import ChatRequest, ChatResponse, SessionResponse, IntentType
+from services.llm_service import create_chat_session, delete_chat_session
 from services.planner_service import generate_execution_plan
 from services.executor_service import execute_plan
 from services.llm_service import get_planner_chat
+from services.response_service import synthesize_response
 
 app = FastAPI()
 
@@ -24,8 +25,58 @@ def start_chat():
 
 @app.post("/chat", response_model=ChatResponse)
 def chat_endpoint(request: ChatRequest):
-    response_text = send_message(request.session_id, request.prompt)
-    return ChatResponse(response=response_text)
+    # STEP 1: Generate execution plan
+    plan = generate_execution_plan(session_id=request.session_id, prompt=request.prompt)
+    if not plan.tasks:
+        return ChatResponse(response="I'm sorry, I could not understand your request clearly. Could you please rephrase it?")
+
+    print("\n========== EXECUTION PLAN ==========")
+    print(plan)
+    print("====================================\n")
+
+    # STEP 2: Execute plan
+    execution_result = execute_plan(session_id=request.session_id, user_query=request.prompt,plan=plan)
+
+    # STEP 3: Inject execution context into planner memory
+    try:
+        planner_chat = get_planner_chat(request.session_id)
+
+        for task_result in execution_result.results:
+            if task_result.requires_clarification:
+                planner_chat.send_message(
+                    f"""
+                    System clarification request:
+                    {task_result.clarification_question}
+                    """
+                )
+
+            elif task_result.success:
+                planner_chat.send_message(
+                    f"""
+                    System execution context:
+
+                    Intent:
+                    {task_result.intent}
+
+                    Execution Result:
+                    {task_result.data if task_result.data else task_result.message}
+
+                    Reuse this information intelligently in future planning.
+                    """
+                )
+
+    except Exception as e:
+        print("Planner memory injection failed:")
+        print(e)
+    
+    # Direct return optimization for pure general chat
+    if (len(execution_result.results) == 1 and execution_result.results[0].intent == IntentType.GENERAL_CHAT and execution_result.results[0].success):
+        return ChatResponse(response=execution_result.results[0].data["response"])
+    
+    # STEP 4: Final response synthesis
+    final_response = synthesize_response(session_id=request.session_id, user_query=request.prompt,execution_result=execution_result)
+
+    return ChatResponse(response=final_response)
 
 
 @app.delete("/end-chat/{session_id}")
@@ -35,33 +86,3 @@ def end_chat(session_id: str):
         "message": "Chat Session Deleted"
     }
 
-
-# DEBUG EXECUTION ROUTE
-@app.post("/execute")
-def execute(request: ChatRequest):
-    plan = generate_execution_plan(session_id=request.session_id, prompt=request.prompt)
-
-    print("\n========== EXECUTION PLAN ==========")
-    print(plan)
-    print("====================================\n")
-
-    result = execute_plan(plan)
-
-    # Inject clarification events into planner memory
-    try:
-        planner_chat = get_planner_chat(request.session_id)
-
-        for task_result in result.results:
-            if task_result.requires_clarification:
-                planner_chat.send_message(
-                    f"""
-                    System clarification request:
-                    {task_result.clarification_question}
-                    """
-                )
-
-    except Exception as e:
-        print("Planner memory injection failed:")
-        print(e)
-
-    return result.model_dump()

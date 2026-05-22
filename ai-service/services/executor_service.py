@@ -1,17 +1,89 @@
 from models.schemas import ExecutionPlan, ExecutionResult, TaskResult, IntentType
-from tools.hospital_tools import search_hospitals, search_departments
+from tools.hospital_tools import *
+from tools.appointment_tools import *
+from services.reasoning_service import *
+from services.response_service import handle_general_chat
 
-
-def execute_plan(plan: ExecutionPlan):
+def execute_plan(session_id: str, user_query: str, plan: ExecutionPlan):
     results = []
     for task in plan.tasks:
         try:
+            # GENERAL CHAT
+            if task.intent == IntentType.GENERAL_CHAT:
+                response = handle_general_chat(session_id=session_id, user_query=user_query)
+                results.append(
+                    TaskResult(
+                        intent=task.intent,
+                        success=True,
+                        data=response
+                    )
+                )
+            
+            # SYMPTOM ANALYSIS
+            elif task.intent == IntentType.SYMPTOM_ANALYSIS:
+                if not task.symptoms:
+                    results.append(
+                        TaskResult(
+                            intent=task.intent,
+                            success=False,
+                            requires_clarification=True,
+                            clarification_question=(
+                                "Please describe your symptoms."
+                            )
+                        )
+                    )
+                    continue
+
+                analysis = analyze_symptoms(session_id=session_id, symptoms=task.symptoms)
+                results.append(
+                    TaskResult(
+                        intent=task.intent,
+                        success=True,
+                        data=analysis
+                    )
+                )
+            
+            # DEPARTMENT RECOMMENDATION
+            elif task.intent == IntentType.DEPARTMENT_RECOMMENDATION:
+                if not task.symptoms:
+                    results.append(
+                        TaskResult(
+                            intent=task.intent,
+                            success=False,
+                            requires_clarification=True,
+                            clarification_question=(
+                                "Please describe your symptoms."
+                            )
+                        )
+                    )
+                    continue
+
+                recommendation = recommend_departments(session_id=session_id, symptoms=task.symptoms)
+                results.append(
+                    TaskResult(
+                        intent=task.intent,
+                        success=True,
+                        data=recommendation
+                    )
+                )
+
             # HOSPITAL SEARCH
-            if task.intent == IntentType.HOSPITAL_SEARCH:
-                if not task.hospital_query :  
+            elif task.intent == IntentType.HOSPITAL_SEARCH:
+                if not task.hospital_queries :
+                    results.append(
+                        TaskResult(
+                            intent=task.intent,
+                            success=False,
+                            requires_clarification=True,
+                            clarification_question=(
+                                "Which hospital, city, or location would you like to search?"
+                            )
+                        )
+                    )
+  
                     continue 
 
-                hospitals = search_hospitals(hospital_query=task.hospital_query)
+                hospitals = search_hospitals(task.hospital_queries)
                 results.append(
                     TaskResult(
                         intent=task.intent,
@@ -24,11 +96,7 @@ def execute_plan(plan: ExecutionPlan):
 
             # DEPARTMENT SEARCH
             elif task.intent == IntentType.DEPARTMENT_SEARCH:
-                if not task.departments : 
-                    continue 
-
-                # MISSING CONTEXT
-                if not task.hospital_query:
+                if not task.hospital_queries:
                     results.append(
                         TaskResult(
                             intent=task.intent,
@@ -41,28 +109,91 @@ def execute_plan(plan: ExecutionPlan):
                     )
                     continue
 
-                department_matches = search_departments(
-                    hospital_query=task.hospital_query,
-                    departments=task.departments
+                matches = fetch_available_departments(task.hospital_queries)
+                results.append(
+                    TaskResult(
+                        intent=task.intent,
+                        success=True,
+                        data={
+                            "matches": matches
+                        }
+                    )
                 )
+                
+            # SESSION SEARCH
+            elif task.intent == IntentType.SESSION_SEARCH:
+                if not task.departments:
+                    results.append(
+                        TaskResult(
+                            intent=task.intent,
+                            success=False,
+                            requires_clarification=True,
+                            clarification_question=(
+                                "Which department or specialist are you looking for?"
+                            )
+                        )
+                    )
+
+                    continue
+
+                if not task.hospital_queries:
+                    results.append(
+                        TaskResult(
+                            intent=task.intent,
+                            success=False,
+                            requires_clarification=True,
+                            clarification_question=(
+                                "Which hospital or city would you like to search in?"
+                            )
+                        )
+                    )
+                    continue
+
+                sessions = search_sessions(hospital_queries=task.hospital_queries, departments=task.departments)
 
                 results.append(
                     TaskResult(
                         intent=task.intent,
                         success=True,
                         data={
-                            "matches": department_matches
+                            "sessions": sessions
                         }
                     )
                 )
 
-            # PLACEHOLDER TASKS
-            else:
+            # REPORT GUIDANCE
+            elif task.intent == IntentType.REPORT_GUIDANCE:
                 results.append(
                     TaskResult(
                         intent=task.intent,
                         success=True,
-                        message="Execution not implemented yet"
+                        message=(
+                            "Report guidance pipeline not implemented yet."
+                        )
+                    )
+                )
+
+            # FAQ QUERY
+            elif task.intent == IntentType.FAQ_QUERY:
+                results.append(
+                    TaskResult(
+                        intent=task.intent,
+                        success=True,
+                        message=(
+                            "FAQ retrieval pipeline not implemented yet."
+                        )
+                    )
+                )
+
+            # APPOINTMENT GUIDANCE
+            elif task.intent == IntentType.APPOINTMENT_GUIDANCE:
+                results.append(
+                    TaskResult(
+                        intent=task.intent,
+                        success=True,
+                        message=(
+                            "Appointment guidance not implemented yet."
+                        )
                     )
                 )
 
@@ -76,4 +207,3 @@ def execute_plan(plan: ExecutionPlan):
             )
 
     return ExecutionResult(results=results)
-
