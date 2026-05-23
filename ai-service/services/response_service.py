@@ -28,6 +28,6 @@ def synthesize_response(session_id: str, user_query: str, execution_result: Exec
 
     Generate the final patient-facing response using the execution results above.
     """
-
+    
     response = chat.send_message(prompt)
     return response.text

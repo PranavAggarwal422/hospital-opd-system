@@ -45,25 +45,36 @@ def chat_endpoint(request: ChatRequest):
             if task_result.requires_clarification:
                 planner_chat.send_message(
                     f"""
-                    System clarification request:
+                    Conversation update:
+
+                    User request:
+                    {request.prompt}
+
+                    System clarification required:
                     {task_result.clarification_question}
+
+                    The conversation is waiting for the user's clarification.
                     """
                 )
+
+                print(f"System clarification required:\n{task_result.clarification_question}")
 
             elif task_result.success:
                 planner_chat.send_message(
                     f"""
-                    System execution context:
+                    Conversation update:
 
-                    Intent:
-                    {task_result.intent}
+                    User request:
+                    {request.prompt}
 
                     Execution Result:
                     {task_result.data if task_result.data else task_result.message}
 
-                    Reuse this information intelligently in future planning.
+                    This context is part of the ongoing conversation.
+                    Reuse it intelligently in future planning.
                     """
                 )
+                print(f"Execution result injected for {task_result.intent}:\n{task_result.data if task_result.data else task_result.message}")
 
     except Exception as e:
         print("Planner memory injection failed:")
@@ -71,6 +82,7 @@ def chat_endpoint(request: ChatRequest):
     
     # Direct return optimization for pure general chat
     if (len(execution_result.results) == 1 and execution_result.results[0].intent == IntentType.GENERAL_CHAT and execution_result.results[0].success):
+        print(f"Direct return for general chat:\n{execution_result.results[0].data['response']}")
         return ChatResponse(response=execution_result.results[0].data["response"])
     
     # STEP 4: Final response synthesis

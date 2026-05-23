@@ -7,7 +7,7 @@ from models.schemas import DepartmentRecommendationResponse, SymptomAnalysisResp
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-def analyze_symptoms(session_id: str, symptoms: list[str]):
+def analyze_symptoms(symptoms: list[str]):
     prompt = f"""
     You are an internal medical reasoning engine for a hospital orchestration system.
 
@@ -57,7 +57,7 @@ def analyze_symptoms(session_id: str, symptoms: list[str]):
         "suggested_departments": parsed.suggested_departments or []
     }
 
-def recommend_departments(session_id: str, symptoms: list[str]):    
+def recommend_departments(symptoms: list[str]):    
     prompt = f"""
         You are an internal department recommendation engine for a hospital orchestration system.
 

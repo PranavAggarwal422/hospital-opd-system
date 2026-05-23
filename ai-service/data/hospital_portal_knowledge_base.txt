@@ -1,0 +1,767 @@
+[PLATFORM_OVERVIEW]
+
+The Hospital Portal is an online OPD management platform designed to help patients manage hospital-related activities digitally.
+
+The platform allows patients to:
+- search hospitals
+- explore hospital departments
+- view doctor sessions
+- understand OPD schedules
+- book appointments
+- manage appointments
+- track token numbers
+- access reports
+- download reports
+- manage account/profile settings
+
+Main sections of the portal:
+- Dashboard
+- Book Appointment
+- My Appointments
+- Reports
+- Account/Profile
+
+The chatbot acts as a healthcare navigation and hospital guidance assistant.
+
+The chatbot can:
+- explain workflows
+- help users navigate the portal
+- explain appointment processes
+- explain hospital rules and policies
+- help identify suitable departments
+- explain report terminology in simple language
+
+The chatbot cannot:
+- directly book appointments
+- directly cancel appointments
+- modify database records
+- update user accounts
+- prescribe medicines
+- provide confirmed diagnosis
+- replace licensed healthcare professionals
+
+Common user questions:
+- What can I do on this portal?
+- How does this hospital portal work?
+- Can chatbot book appointment for me?
+- Can chatbot cancel my appointment?
+- What services are available online?
+
+--------------------------------------------------
+
+[REGISTRATION_WORKFLOW]
+
+New users can create an account using the Registration page.
+
+Users may register using:
+- phone number only
+- email only
+- both email and phone number
+
+At least ONE of the following is required:
+- email
+- phone number
+
+Registration typically requires:
+- full name
+- password
+- gender
+
+Optional information may include:
+- address
+- date of birth
+
+Important rules:
+- email must be unique
+- phone number must be unique
+- duplicate accounts using same phone/email are not allowed
+
+Registration may fail if:
+- email already exists
+- phone number already exists
+- required information is missing
+
+After successful registration:
+- account is created
+- user can login using registered credentials
+
+Common user questions:
+- How do I create account?
+- Can I register using phone number only?
+- Is email mandatory?
+- Why is registration failing?
+- Why is my phone number already in use?
+- Why is my email already registered?
+
+--------------------------------------------------
+
+[LOGIN_WORKFLOW]
+
+Registered users can login using their credentials.
+
+Users may login using:
+- registered email
+- registered phone number
+
+Login requires:
+- valid credentials
+- correct password
+
+Login may fail if:
+- password is incorrect
+- account does not exist
+- wrong email/phone is entered
+
+After successful login:
+- dashboard becomes accessible
+- appointments become visible
+- reports become accessible
+
+Common user questions:
+- How do I login?
+- Can I login using phone number?
+- Can I login using email?
+- Why is login failing?
+- I forgot my password
+- Why does portal say invalid credentials?
+
+--------------------------------------------------
+
+[DASHBOARD]
+
+Dashboard is the main page visible after login.
+
+Dashboard provides:
+- quick access cards
+- appointment overview
+- token information
+- upcoming appointments
+- shortcuts to portal features
+
+Dashboard may display:
+- upcoming appointments
+- token numbers
+- expected consultation time
+- hospital details
+- doctor details
+
+Dashboard cards may include:
+- Book Appointment
+- My Appointments
+- Reports
+
+Common user questions:
+- What is dashboard?
+- Where can I see upcoming appointments?
+- Where can I see token number?
+- How can I access reports?
+- How can I book appointment?
+
+--------------------------------------------------
+
+[ACCOUNT_NAVIGATION]
+
+Account section contains user account management options.
+
+Available options may include:
+- Profile
+- Update Profile
+- Change Password
+- Logout
+
+Users can:
+- review account details
+- update personal information
+- change password
+- logout securely
+
+Common user questions:
+- Where is profile section?
+- How can I change password?
+- How do I logout?
+- How can I update my information?
+
+--------------------------------------------------
+
+[PROFILE_PAGE]
+
+Profile page contains user information.
+
+Profile may display:
+- full name
+- gender
+- date of birth
+- email
+- phone number
+- address
+
+Users can review stored account details from this page.
+
+Common user questions:
+- Where can I see my profile?
+- How can I view my information?
+- Where is my phone number stored?
+- How can I check registered email?
+
+--------------------------------------------------
+
+[UPDATE_PROFILE]
+
+Users can update profile information from:
+Account → Update Profile
+
+Editable information may include:
+- name
+- address
+- gender
+- phone number
+- email
+- date of birth
+
+Important rules:
+- phone number must remain unique
+- email must remain unique
+
+Profile update may fail if:
+- email already belongs to another user
+- phone number already belongs to another user
+
+Common user questions:
+- How can I update profile?
+- How can I change phone number?
+- How can I change email?
+- Why is profile update failing?
+- Why does portal say phone already exists?
+
+--------------------------------------------------
+
+[CHANGE_PASSWORD]
+
+Password can be changed from:
+Account → Change Password
+
+Password update requires:
+- current password
+- new password
+- confirm password
+
+Important rules:
+- current password must be correct
+- new password and confirm password must match
+
+Password change may fail if:
+- current password is incorrect
+- confirm password does not match
+
+Common user questions:
+- How can I change password?
+- Why is password update failing?
+- Why does portal say incorrect current password?
+
+--------------------------------------------------
+
+[HOSPITAL_SEARCH]
+
+Users can search hospitals from:
+Book Appointment page
+
+Hospitals may be searched using:
+- hospital name
+- city
+- state
+
+Examples:
+- AIIMS Delhi
+- Delhi
+- Rajasthan
+- Apollo
+
+Search results may display:
+- hospital name
+- city
+- state
+
+Users can open department listings from hospital results.
+
+Common user questions:
+- How can I search hospitals?
+- Can I search hospitals by city?
+- Can I search hospitals by state?
+- How can I find hospitals in Delhi?
+- How can I find Apollo hospital?
+
+--------------------------------------------------
+
+[DEPARTMENT_DISCOVERY]
+
+After selecting a hospital,
+users can explore departments available in that hospital.
+
+Departments page may contain:
+- department listings
+- department search
+- navigation buttons
+
+Examples of departments:
+- Cardiology
+- Neurology
+- Orthopedics
+- Dermatology
+- General Medicine
+
+Users can search departments by name.
+
+After selecting a department,
+doctor sessions become accessible.
+
+Common user questions:
+- How can I see departments?
+- Which departments are available?
+- How can I find orthopedic department?
+- How can I find neurology department?
+
+--------------------------------------------------
+
+[DOCTOR_SESSIONS]
+
+Doctor Sessions page displays OPD session information.
+
+Users can:
+- view doctors
+- view schedules
+- view session timings
+- view weekdays
+- view OPD room numbers
+- search doctor sessions
+
+Session details may include:
+- doctor name
+- weekday
+- start time
+- end time
+- room number
+
+Examples:
+- Monday | 9:00 AM – 12:00 PM
+- Tuesday | 2:00 PM – 5:00 PM
+
+Session availability depends on:
+- doctor availability
+- department
+- hospital
+- weekday
+
+Some sessions may become unavailable if:
+- doctor becomes inactive
+- session becomes inactive
+- hospital becomes inactive
+
+Common user questions:
+- How can I see available doctors?
+- How can I check doctor timings?
+- How can I see OPD schedule?
+- How can I find orthopedic doctors?
+- How can I see available sessions?
+- Where can I see session timings?
+- How can I consult doctor?
+- How can I schedule OPD consultation?
+
+--------------------------------------------------
+
+[APPOINTMENT_BOOKING_WORKFLOW]
+
+Appointment booking workflow:
+
+1. Open Book Appointment
+2. Search hospital
+3. Open departments
+4. Select department
+5. Open doctor sessions
+6. Select session
+7. Choose appointment date
+8. Confirm appointment booking
+
+After successful booking:
+- appointment appears in My Appointments
+- token number is generated
+- appointment appears on Dashboard
+
+Appointments are booked manually by users through the portal.
+
+The chatbot does not directly perform booking operations.
+
+Common user questions:
+- How do I book appointment?
+- How can I schedule OPD appointment?
+- How do I consult doctor online?
+- How can I take OPD token?
+- How can I book hospital appointment?
+- How do I book orthopedic appointment?
+- How can I book cardiology appointment?
+
+--------------------------------------------------
+
+[APPOINTMENT_VALIDATION_RULES]
+
+Appointment booking follows multiple validation rules.
+
+Users cannot:
+- book appointments in the past
+- book appointments beyond the next 30 days
+- book appointments for inactive hospitals
+- book appointments for inactive departments
+- book appointments for inactive sessions
+- book appointments for inactive doctors
+
+Appointments must match correct session weekday.
+
+Example:
+If session is available only on Monday,
+users cannot book appointment for Tuesday.
+
+Same-day booking may fail if:
+- session timing already ended
+- OPD session closed
+
+Booking may fail due to:
+- invalid date
+- inactive doctor
+- inactive session
+- hospital restrictions
+- incorrect weekday
+
+Common user questions:
+- Why is booking failing?
+- Why can’t I book appointment?
+- Why is selected date invalid?
+- Why can’t I book for next month?
+- Why can’t I select this doctor?
+- Why does portal say session unavailable?
+
+--------------------------------------------------
+
+[MULTIPLE_APPOINTMENT_RESTRICTIONS]
+
+Portal prevents duplicate or conflicting appointments.
+
+Users may not be allowed to:
+- hold multiple upcoming appointments in same department
+- repeatedly rebook cancelled appointments for same day
+
+Example:
+If patient already has upcoming Orthopedics appointment,
+another Orthopedics booking may be restricted.
+
+Rebooking restrictions may apply after cancellation.
+
+Common user questions:
+- Why can’t I book another appointment?
+- Why does portal say appointment already exists?
+- Why can’t I rebook appointment?
+- Why can’t I book same department again?
+
+--------------------------------------------------
+
+[TOKEN_SYSTEM]
+
+Portal uses token-based OPD queue management.
+
+Important rules:
+- token allocation follows FCFS (First Come First Serve)
+- earlier bookings usually receive lower token numbers
+- lower token numbers usually indicate earlier consultation order
+
+Token numbers are visible in:
+- Dashboard
+- My Appointments
+- Appointment Details
+
+Actual consultation order may vary depending on:
+- emergencies
+- patient load
+- consultation duration
+- doctor availability
+
+Common user questions:
+- What is token number?
+- How is token generated?
+- Why is my token high?
+- What does FCFS mean?
+- How does token system work?
+
+--------------------------------------------------
+
+[EXPECTED_CONSULTATION_TIME]
+
+Expected consultation time is estimated using:
+- token number
+- session timing
+- average consultation duration
+
+Expected time is only an estimate.
+
+Actual consultation timing may vary due to:
+- emergencies
+- delays
+- long consultations
+- operational issues
+
+Expected consultation time may appear in:
+- Dashboard
+- Appointment Details
+
+Common user questions:
+- How is expected time calculated?
+- Why is expected time changing?
+- When will my turn come?
+- Why is consultation delayed?
+
+--------------------------------------------------
+
+[MY_APPOINTMENTS]
+
+My Appointments page allows users to:
+- view appointments
+- search appointments
+- open appointment details
+- cancel appointments
+
+Appointments may be categorized as:
+- upcoming
+- completed
+- cancelled
+
+Appointment search may support:
+- hospital name
+- department
+- doctor name
+
+Common user questions:
+- Where can I see appointments?
+- How can I check booked appointments?
+- Where is my appointment history?
+- How can I search appointments?
+
+--------------------------------------------------
+
+[APPOINTMENT_DETAILS]
+
+Appointment Details page shows detailed appointment information.
+
+Information may include:
+- hospital name
+- department
+- doctor name
+- token number
+- session timing
+- expected consultation time
+- appointment status
+
+Users may also:
+- download reports
+- leave feedback
+
+Common user questions:
+- Where can I see appointment details?
+- How can I see token number?
+- Where is expected consultation time?
+- How can I open appointment information?
+
+--------------------------------------------------
+
+[CANCEL_APPOINTMENT]
+
+Upcoming appointments may be cancelled from:
+My Appointments → Cancel
+
+Cancellation availability depends on appointment status.
+
+Rules:
+- completed appointments usually cannot be cancelled
+- cancelled appointments cannot be reused
+- rebooking restrictions may apply
+
+After cancellation:
+- appointment status changes to Cancelled
+
+Common user questions:
+- How can I cancel appointment?
+- Why can’t I cancel appointment?
+- Where is cancel button?
+- Can I rebook cancelled appointment?
+
+--------------------------------------------------
+
+[LEAVE_FEEDBACK]
+
+Users can leave feedback after appointments.
+
+Feedback workflow:
+My Appointments → Appointment Details → Leave Feedback
+
+Feedback may include:
+- ratings
+- comments
+- experience summary
+
+Feedback helps hospitals improve service quality.
+
+Common user questions:
+- How can I leave feedback?
+- Where can I rate appointment?
+- How can I review doctor experience?
+
+--------------------------------------------------
+
+[REPORTS_SECTION]
+
+Reports page allows users to:
+- search reports
+- view reports
+- download reports
+
+Reports may include:
+- blood tests
+- MRI reports
+- X-ray reports
+- CT scan reports
+- diagnostic reports
+
+Reports may be linked to appointments.
+
+Common user questions:
+- Where can I see reports?
+- How can I access MRI report?
+- How can I check blood report?
+- How can I find test reports?
+
+--------------------------------------------------
+
+[DOWNLOAD_REPORTS]
+
+Reports can be downloaded from:
+- Reports page
+- Appointment Details page
+
+Downloaded files may include:
+- PDFs
+- diagnostic reports
+- scan summaries
+
+Stable internet connection is recommended during downloads.
+
+Common user questions:
+- How can I download report?
+- Where is report download option?
+- Why is report not downloading?
+
+--------------------------------------------------
+
+[REPORT_GUIDANCE]
+
+The chatbot may help explain:
+- general report terminology
+- common medical terms
+- basic healthcare language
+
+The chatbot does NOT:
+- provide confirmed diagnosis
+- replace doctors
+- prescribe medications
+
+Users should consult licensed medical professionals for diagnosis and treatment.
+
+Common user questions:
+- Can chatbot explain report?
+- Can chatbot diagnose disease?
+- Can chatbot explain blood report?
+- Can chatbot explain MRI report?
+
+--------------------------------------------------
+
+[SEARCH_FUNCTIONALITY]
+
+Many portal pages support search functionality.
+
+Search may be available for:
+- hospitals
+- departments
+- doctor sessions
+- appointments
+- reports
+
+Search bars help users quickly locate relevant information.
+
+Common user questions:
+- Where is search option?
+- How can I search hospital?
+- How can I search reports?
+- How can I search appointments?
+
+--------------------------------------------------
+
+[OPD_WORKFLOW_GUIDANCE]
+
+Typical OPD workflow:
+
+1. Login to portal
+2. Book appointment
+3. Receive token number
+4. Visit hospital on appointment date
+5. Wait according to token order
+6. Attend consultation
+7. Access reports later if available
+
+Patients should arrive before scheduled session timing.
+
+Common user questions:
+- What happens after booking?
+- How does OPD process work?
+- When should I visit hospital?
+- How does consultation queue work?
+
+--------------------------------------------------
+
+[CHATBOT_LIMITATIONS]
+
+The chatbot cannot:
+- directly book appointments
+- directly cancel appointments
+- modify database records
+- update profile information
+- change passwords
+- generate prescriptions
+- provide confirmed diagnosis
+- perform treatment
+
+The chatbot only:
+- explains workflows
+- guides users
+- summarizes information
+- provides hospital navigation support
+
+Common user questions:
+- Can chatbot book appointment?
+- Can chatbot cancel my appointment?
+- Can chatbot change my profile?
+- Can chatbot prescribe medicine?
+
+--------------------------------------------------
+
+[FAQ_GENERAL_GUIDANCE]
+
+The chatbot is designed for:
+- healthcare guidance
+- hospital workflow explanation
+- appointment guidance
+- navigation assistance
+
+The chatbot should not be considered a replacement for doctors or hospitals.
+
+For emergencies or severe symptoms,
+users should seek immediate professional medical attention.
+
+Common user questions:
+- Can chatbot replace doctor?
+- Is chatbot giving medical diagnosis?
+- Should I visit hospital for emergency?
