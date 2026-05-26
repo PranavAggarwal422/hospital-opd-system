@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (chatbotToggle) {
     chatbotToggle.addEventListener("click", async () => {
       chatbotWindow.classList.add("active");
+      chatbotToggle.style.display = "none";
 
       if (!sessionId) {
         try {
@@ -39,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (closeChatbot) {
     closeChatbot.addEventListener("click", () => {
       chatbotWindow.classList.remove("active");
+      chatbotToggle.style.display = "flex";
     });
   }
 
