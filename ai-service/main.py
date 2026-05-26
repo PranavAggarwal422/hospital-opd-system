@@ -56,25 +56,7 @@ def chat_endpoint(request: ChatRequest):
                     The conversation is waiting for the user's clarification.
                     """
                 )
-
                 print(f"System clarification required:\n{task_result.clarification_question}")
-
-            elif task_result.success:
-                planner_chat.send_message(
-                    f"""
-                    Conversation update:
-
-                    User request:
-                    {request.prompt}
-
-                    Execution Result:
-                    {task_result.data if task_result.data else task_result.message}
-
-                    This context is part of the ongoing conversation.
-                    Reuse it intelligently in future planning.
-                    """
-                )
-                print(f"Execution result injected for {task_result.intent}:\n{task_result.data if task_result.data else task_result.message}")
 
     except Exception as e:
         print("Planner memory injection failed:")

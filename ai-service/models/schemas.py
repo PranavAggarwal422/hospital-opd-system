@@ -19,11 +19,8 @@ class IntentType(str, Enum):
     # User describes symptoms, pain, illness, or medical problems
     SYMPTOM_ANALYSIS = "symptom_analysis"
 
-    # User wants specialist or department recommendations based on symptoms/problems
-    DEPARTMENT_RECOMMENDATION = "department_recommendation"
-
     # User want help understanding reports/medical documents
-    REPORT_GUIDANCE = "report_guidance"
+    REPORT_EXPLANATION = "report_explanation"
 
     # User asks about hospital workflows, appointment guidance, portal navigation, policies etc.
     FAQ_QUERY = "faq_query"
@@ -48,10 +45,6 @@ class TaskResult(BaseModel):
 
 class ExecutionResult(BaseModel):
     results: List[TaskResult]
-
-class DepartmentRecommendationResponse(BaseModel):
-    departments: list[str]
-    explanation: str
 
 class SymptomAnalysisResponse(BaseModel):
     analysis: str

@@ -42,32 +42,8 @@ def execute_plan(session_id: str, user_query: str, plan: ExecutionPlan):
                     )
                 )
             
-            # DEPARTMENT RECOMMENDATION
-            elif task.intent == IntentType.DEPARTMENT_RECOMMENDATION:
-                if not task.symptoms:
-                    results.append(
-                        TaskResult(
-                            intent=task.intent,
-                            success=False,
-                            requires_clarification=True,
-                            clarification_question=(
-                                "Please describe your symptoms."
-                            )
-                        )
-                    )
-                    continue
-
-                recommendation = recommend_departments(symptoms=task.symptoms)
-                results.append(
-                    TaskResult(
-                        intent=task.intent,
-                        success=True,
-                        data=recommendation
-                    )
-                )
-
             # REPORT GUIDANCE
-            elif task.intent == IntentType.REPORT_GUIDANCE:
+            elif task.intent == IntentType.REPORT_EXPLANATION:
                 results.append(
                     TaskResult(
                         intent=task.intent,
