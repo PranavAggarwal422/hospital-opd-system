@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 
-from models.schemas import ChatRequest, ChatResponse, SessionResponse, IntentType
+from models.schemas import *
+from services.report_service import explain_medical_report, validate_report_file, MAX_FILE_SIZE
 from services.llm_service import create_chat_session, delete_chat_session
 from services.planner_service import generate_execution_plan
 from services.executor_service import execute_plan
@@ -80,3 +81,31 @@ def end_chat(session_id: str):
         "message": "Chat Session Deleted"
     }
 
+@app.post("/analyze-report", response_model=ChatResponse)
+async def analyze_report(session_id: str = Form(...), file: UploadFile = File(...)):
+    try:
+        validate_report_file(file)
+        file_bytes = await file.read()
+
+        if len(file_bytes) > MAX_FILE_SIZE:
+            return ChatResponse(response="File size exceeds 5 MB limit.")
+
+        report_result = explain_medical_report(file_bytes=file_bytes, mime_type=file.content_type)
+
+        execution_result = ExecutionResult(
+            results=[
+                TaskResult(
+                    intent=IntentType.REPORT_EXPLANATION,
+                    success=True,
+                    data=report_result
+                )
+            ]
+        )
+
+        final_response = synthesize_response(session_id=session_id, user_query="Analyze uploaded medical report", execution_result=execution_result)
+
+        return ChatResponse(response=final_response)
+
+    except Exception as e:
+        return ChatResponse(response=str(e))
+    

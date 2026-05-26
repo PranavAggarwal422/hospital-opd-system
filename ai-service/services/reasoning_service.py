@@ -1,6 +1,5 @@
 from google import genai
 from google.genai import types
-from pydantic import BaseModel
 from core.config import GEMINI_API_KEY, MODEL_NAME
 
 from models.schemas import SymptomAnalysisResponse

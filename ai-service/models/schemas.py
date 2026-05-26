@@ -50,3 +50,9 @@ class SymptomAnalysisResponse(BaseModel):
     analysis: str
     suggested_departments: Optional[list[str]] = None
 
+class ReportExplanationResponse(BaseModel):
+    summary: str
+    notable_findings: List[str]
+    precautions: List[str]
+    doctor_consultation_recommended: bool
+

@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const sendChatMessage = document.getElementById("sendChatMessage");
   const chatbotInput = document.getElementById("chatbotInput");
   const chatbotMessages = document.getElementById("chatbotMessages");
+  const uploadReportBtn = document.getElementById("uploadReportBtn");
+  const reportFileInput = document.getElementById("reportFileInput");
 
   const FASTAPI_URL = "http://127.0.0.1:8000";
 
@@ -73,10 +75,56 @@ document.addEventListener("DOMContentLoaded", function () {
   function appendMessage(message, type) {
     const messageDiv = document.createElement("div");
     messageDiv.classList.add(type === "user" ? "user-message" : "bot-message");
-    messageDiv.innerHTML = message.replace(/\n/g, "<br>");
+    messageDiv.innerHTML = marked.parse(message);
 
     chatbotMessages.appendChild(messageDiv);
     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+  }
+
+  // OPEN FILE PICKER
+  if(uploadReportBtn) {
+    uploadReportBtn.addEventListener("click", () => {
+      reportFileInput.click();
+    });
+  }
+
+  // HANDLE REPORT UPLOAD
+  if(reportFileInput) {
+    reportFileInput.addEventListener("change", async function (e) {
+      const file = e.target.files[0];
+      if (!file || !sessionId) return;
+
+      appendMessage(`Uploaded Report: ${file.name}`, "user");
+      appendMessage("Analyzing medical report...", "bot");
+
+      try {
+        const formData = new FormData();
+
+        formData.append("session_id", sessionId);
+        formData.append("file", file);
+
+        const response = await fetch(`${FASTAPI_URL}/analyze-report`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        // REMOVE LOADING MESSAGE
+        chatbotMessages.removeChild(chatbotMessages.lastChild);
+        appendMessage(data.response, "bot");
+      }
+
+      catch(error) {
+        console.error(error);
+        chatbotMessages.removeChild(chatbotMessages.lastChild);
+
+        appendMessage("Sorry, report analysis is unavailable right now.", "bot");
+      }
+
+      // RESET INPUT
+      reportFileInput.value = "";
+    });
   }
 
   // BUTTON SEND

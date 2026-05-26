@@ -1,6 +1,7 @@
 from models.schemas import ExecutionPlan, ExecutionResult, TaskResult, IntentType
-from services.reasoning_service import *
+from services.reasoning_service import analyze_symptoms
 from services.response_service import handle_general_chat
+from services.report_service import explain_report_text
 from vectorstore.retriever import retrieve_context
 
 def execute_plan(session_id: str, user_query: str, plan: ExecutionPlan):
@@ -44,13 +45,13 @@ def execute_plan(session_id: str, user_query: str, plan: ExecutionPlan):
             
             # REPORT GUIDANCE
             elif task.intent == IntentType.REPORT_EXPLANATION:
+                report_result = explain_report_text(user_query)
+                # print(report_result)
                 results.append(
                     TaskResult(
                         intent=task.intent,
                         success=True,
-                        message=(
-                            "Report guidance pipeline not implemented yet."
-                        )
+                        data=report_result
                     )
                 )
 

@@ -10,7 +10,6 @@ def handle_general_chat(session_id: str, user_query: str):
         "response": response.text
     }
 
-
 def synthesize_response(session_id: str, user_query: str, execution_result: ExecutionResult):
     """
     Generates the final conversational response
